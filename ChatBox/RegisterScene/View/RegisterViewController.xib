@@ -10,7 +10,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RegisterViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
-                <outlet property="backgroundImage" destination="Dv4-yG-yww" id="qvI-Qw-pKG"/>
                 <outlet property="differentPass" destination="xeh-Ec-vWl" id="xgp-tj-WCi"/>
                 <outlet property="emailTextField" destination="q0q-B5-dC4" id="ve7-1H-5SX"/>
                 <outlet property="errorEmail" destination="TZ3-5N-TMD" id="a5V-dA-9ZP"/>
@@ -151,7 +150,7 @@
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TZ3-5N-TMD">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TZ3-5N-TMD">
                     <rect key="frame" x="71" y="329" width="250" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>

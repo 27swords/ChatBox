@@ -15,13 +15,11 @@ final class RegisterViewController: UIViewController {
     @IBOutlet weak var passTextField: UITextField!
     @IBOutlet weak var repPassTextField: UITextField!
     @IBOutlet weak var differentPass: UILabel!
-    @IBOutlet weak var backgroundImage: UIImageView!
     
     //MARK: - Inits
     var delegate: StartViewControllerDelegate?
     var checkFields = CheckFields.shared
-    var serviceUser = FireBaseService.shared
-    var checkError = CheckErrors.shared
+    var serviceUser = RegisterModel.shared
         
     //MARK: - Aсtions
     @IBAction func closeRegisterAction(_ sender: Any) {
@@ -29,48 +27,48 @@ final class RegisterViewController: UIViewController {
     }
     
     @IBAction func regButtonAction(_ sender: Any) {
-        
         let tabBarVC = TabBarViewController()
-        let loginField = LoginModel(email: emailTextField.text!, password: passTextField.text!)
+        let email = emailTextField.text ?? ""
+        let password = passTextField.text ?? ""
+        let data = LoginModel(email: email, password: password)
         
-        //проверка Email
-        if checkFields.isValidEmail(emailTextField.text ?? "") && passTextField.text == repPassTextField.text {
-            serviceUser.createNewUser(loginField) { [weak self] code in
-                switch code.code {
-                case 0:
-                    print("Ошибка регистрации")
-                case 1:
+        switch (checkFields.isValidEmail(email), password == repPassTextField.text) {
+        case (true, true):
+            serviceUser.createNewUser(data) { [weak self] response in
+                switch response {
+        
+                case .success:
+                    let alert = UIAlertController(title: "Активация", message: "На вашу почту отправлено письмо активации!", preferredStyle: .alert)
+                    let alertButton = UIAlertAction(title: "OK", style: .cancel)
+                    alert.addAction(alertButton)
+                    self?.present(alert, animated: true)
+                    
                     self?.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
                     self?.serviceUser.configEmail()
-                default:
-                    print("неизвестная ошибка")
+
+                case .alreadyInUse:
+                    print("Почта уже существует")
                     
+                case .error:
+                    print("Ошибка регистрации")
                 }
             }
-        } else {
-            errorEmail.isHidden = false
-        }
-        
-        //проверка паролей на отличия
-        if passTextField.text == repPassTextField.text {
-            differentPass.isHidden = true
-        } else {
+        case (false, _):
+            errorEmail.text = "Неверный E-mail"
+            
+        default:
             differentPass.isHidden = false
         }
     }
-    
+
     //MARK: - LIfeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
-        
     //MARK: - Methods
     //скрытие клавиатуры по тапу 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
 }
-
-
-

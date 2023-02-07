@@ -9,8 +9,14 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
+    //MARK: - Outlets
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    
     //MARK: - Inits
     var delegate: StartViewControllerDelegate?
+    var authService = AuthModel.shared
+    var checkFields = CheckFields.shared
 
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {
@@ -19,7 +25,26 @@ final class AuthViewController: UIViewController {
     
     @IBAction func logInChat(_ sender: Any) {
         let tabBarVC = TabBarViewController()
-        self.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
+        let email = emailTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        let loginField = LoginModel(email: email, password: password)
+        
+        if checkFields.isValidEmail(email) {
+            authService.authInApp(loginField) { [weak self] response in
+                switch response {
+                    
+                case .success:
+                    print("SUCCES")
+                    self?.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
+                    
+                case .notVerify:
+                    print("NOT VEREFY")
+                    
+                case .error:
+                    print("ERRRO AUTHVC")
+                }
+            }
+        }
     }
     
     //MARK: - LifeCycle
@@ -33,3 +58,4 @@ final class AuthViewController: UIViewController {
         view.endEditing(true)
     }
 }
+
