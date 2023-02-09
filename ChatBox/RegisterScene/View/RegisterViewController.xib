@@ -10,9 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RegisterViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
-                <outlet property="differentPass" destination="xeh-Ec-vWl" id="xgp-tj-WCi"/>
                 <outlet property="emailTextField" destination="q0q-B5-dC4" id="ve7-1H-5SX"/>
                 <outlet property="errorEmail" destination="TZ3-5N-TMD" id="a5V-dA-9ZP"/>
+                <outlet property="errorPassword" destination="xeh-Ec-vWl" id="bqt-zB-IMe"/>
                 <outlet property="passTextField" destination="nu1-WQ-XUt" id="fQV-zh-S3h"/>
                 <outlet property="repPassTextField" destination="9gH-70-OTL" id="ZAZ-lo-XQs"/>
                 <outlet property="view" destination="rye-pk-0UU" id="Fwq-dO-Pgn"/>
@@ -143,7 +143,7 @@
                         <action selector="closeRegisterAction:" destination="-1" eventType="touchUpInside" id="YsH-xo-LWv"/>
                     </connections>
                 </button>
-                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Пароли не совпадают" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xeh-Ec-vWl">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xeh-Ec-vWl">
                     <rect key="frame" x="71" y="418" width="250" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>

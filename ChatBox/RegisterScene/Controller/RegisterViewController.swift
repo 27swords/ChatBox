@@ -14,52 +14,22 @@ final class RegisterViewController: UIViewController {
     @IBOutlet weak var errorEmail: UILabel!
     @IBOutlet weak var passTextField: UITextField!
     @IBOutlet weak var repPassTextField: UITextField!
-    @IBOutlet weak var differentPass: UILabel!
+    @IBOutlet weak var errorPassword: UILabel!
     
     //MARK: - Inits
     var delegate: StartViewControllerDelegate?
-    var checkFields = CheckFields.shared
-    var serviceUser = RegisterModel.shared
+    var checkFields = CheckFields()
+    var serviceUser = RegisterService()
         
     //MARK: - Aсtions
     @IBAction func closeRegisterAction(_ sender: Any) {
         delegate?.closeVC()
     }
-    
+  
     @IBAction func regButtonAction(_ sender: Any) {
-        let tabBarVC = TabBarViewController()
-        let email = emailTextField.text ?? ""
-        let password = passTextField.text ?? ""
-        let data = LoginModel(email: email, password: password)
-        
-        switch (checkFields.isValidEmail(email), password == repPassTextField.text) {
-        case (true, true):
-            serviceUser.createNewUser(data) { [weak self] response in
-                switch response {
-        
-                case .success:
-                    let alert = UIAlertController(title: "Активация", message: "На вашу почту отправлено письмо активации!", preferredStyle: .alert)
-                    let alertButton = UIAlertAction(title: "OK", style: .cancel)
-                    alert.addAction(alertButton)
-                    self?.present(alert, animated: true)
-                    
-                    self?.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
-                    self?.serviceUser.configEmail()
-
-                case .alreadyInUse:
-                    print("Почта уже существует")
-                    
-                case .error:
-                    print("Ошибка регистрации")
-                }
-            }
-        case (false, _):
-            errorEmail.text = "Неверный E-mail"
-            
-        default:
-            differentPass.isHidden = false
-        }
+        createUser()
     }
+
 
     //MARK: - LIfeCycle
     override func viewDidLoad() {
@@ -70,5 +40,52 @@ final class RegisterViewController: UIViewController {
     //скрытие клавиатуры по тапу 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+
+}
+
+//MARK: - Private Extension
+private extension RegisterViewController {
+    // регистрация пользователя и проверка ввода данных
+    private func createUser() {
+        let tabBarVC = TabBarViewController()
+        let email = emailTextField.text ?? ""
+        let password = passTextField.text ?? ""
+        let repPassword = repPassTextField.text ?? ""
+
+        if !checkFields.isValidEmail(email) {
+            errorEmail.text = "Неверный E-mail"
+            return
+        }
+
+        if password != repPassword {
+            errorPassword.text = "Пароли не совпадают"
+            return
+        }
+        
+        if !checkFields.isPasswordValid(password) {
+            errorPassword.text = "Слишком простой пароль"
+            return
+        }
+
+        let data = LoginModel(email: email, password: password)
+        serviceUser.createNewUser(data) { [weak self] response in
+            switch response {
+            case .success:
+                let alert = UIAlertController(title: "Активация", message: "На вашу почту отправлено письмо активации!", preferredStyle: .alert)
+                let alertButton = UIAlertAction(title: "OK", style: .cancel)
+                alert.addAction(alertButton)
+                self?.present(alert, animated: true)
+                
+                self?.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
+                
+            case .alreadyInUse:
+                self?.errorEmail.text = "E-mail уже используется"
+                
+            case .error:
+                self?.errorEmail.text = "Ошибка Регистрации"
+                print("ERROR EMAIL")
+            }
+        }
     }
 }

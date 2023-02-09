@@ -56,7 +56,7 @@
 		49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49961820298A5FD6003E4AF3 /* FriendsViewController.swift */; };
 		49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49961821298A5FD6003E4AF3 /* FriendsViewController.xib */; };
 		49CE63AA299135AB008D188A /* CheckFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63A9299135AB008D188A /* CheckFields.swift */; };
-		49CE63AC29914E8F008D188A /* RegisterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AB29914E8F008D188A /* RegisterModel.swift */; };
+		49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AB29914E8F008D188A /* RegisterService.swift */; };
 		49CE63AE29914FA1008D188A /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AD29914FA1008D188A /* LoginModel.swift */; };
 		49CE63B029915103008D188A /* RegisterResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AF29915103008D188A /* RegisterResponse.swift */; };
 		49FF642B29883DD90047C2C3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FF642929883DD90047C2C3 /* AuthViewController.swift */; };
@@ -88,7 +88,7 @@
 		49961820298A5FD6003E4AF3 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		49961821298A5FD6003E4AF3 /* FriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsViewController.xib; sourceTree = "<group>"; };
 		49CE63A9299135AB008D188A /* CheckFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckFields.swift; sourceTree = "<group>"; };
-		49CE63AB29914E8F008D188A /* RegisterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModel.swift; sourceTree = "<group>"; };
+		49CE63AB29914E8F008D188A /* RegisterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterService.swift; sourceTree = "<group>"; };
 		49CE63AD29914FA1008D188A /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		49CE63AF29915103008D188A /* RegisterResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterResponse.swift; sourceTree = "<group>"; };
 		49FF642929883DD90047C2C3 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
@@ -208,6 +208,7 @@
 				49146AB429856C1F00DF15A5 /* AppFiles */,
 				49076077298A727700AFCF27 /* Extensions */,
 				49826A4B2992C5DE009B8C30 /* Common */,
+				494BF1AA299527B000A932D8 /* DTO */,
 				49146AB529856C2F00DF15A5 /* StartScene */,
 				49146ABA29857D2B00DF15A5 /* RegisterScene */,
 				4969F66129883C4000CD9823 /* AuthScene */,
@@ -219,6 +220,14 @@
 				4914A808298529E40076F03C /* GoogleService-Info.plist */,
 			);
 			path = ChatBox;
+			sourceTree = "<group>";
+		};
+		494BF1AA299527B000A932D8 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				49CE63AD29914FA1008D188A /* LoginModel.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		4969F65729882FBF00CD9823 /* View */ = {
@@ -266,6 +275,7 @@
 		49826A4A2992C534009B8C30 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				49826A4C2992D03E009B8C30 /* AuthResponse.swift */,
 				49826A482992C52B009B8C30 /* AuthModel.swift */,
 			);
 			path = Model;
@@ -274,10 +284,7 @@
 		49826A4B2992C5DE009B8C30 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				49CE63AF29915103008D188A /* RegisterResponse.swift */,
-				49CE63AD29914FA1008D188A /* LoginModel.swift */,
 				49CE63A9299135AB008D188A /* CheckFields.swift */,
-				49826A4C2992D03E009B8C30 /* AuthResponse.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -336,7 +343,8 @@
 		49CE63A829913576008D188A /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				49CE63AB29914E8F008D188A /* RegisterModel.swift */,
+				49CE63AF29915103008D188A /* RegisterResponse.swift */,
+				49CE63AB29914E8F008D188A /* RegisterService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -487,7 +495,7 @@
 				4914A7F9298527C40076F03C /* StartViewController.swift in Sources */,
 				49CE63B029915103008D188A /* RegisterResponse.swift in Sources */,
 				4914A7F5298527C40076F03C /* AppDelegate.swift in Sources */,
-				49CE63AC29914E8F008D188A /* RegisterModel.swift in Sources */,
+				49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,
 				498D84B2298984F600DF535E /* ChatTableViewCell.swift in Sources */,
 				49CE63AA299135AB008D188A /* CheckFields.swift in Sources */,

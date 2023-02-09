@@ -15,8 +15,8 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Inits
     var delegate: StartViewControllerDelegate?
-    var authService = AuthModel.shared
-    var checkFields = CheckFields.shared
+    var authService = AuthModel()
+    var checkFields = CheckFields()
 
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {

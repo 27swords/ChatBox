@@ -11,10 +11,6 @@ import FirebaseFirestore
 
 class AuthModel {
     
-    //MARK: - Singleton
-    static let shared = AuthModel()
-    init() {}
-    
     func authInApp(_ data: LoginModel, completion: @escaping (AuthResponse) -> ()) {
         Auth.auth().signIn(withEmail: data.email, password: data.password) { result, error in
             if error != nil {
