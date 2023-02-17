@@ -55,6 +55,8 @@
 		498D84B92989875500DF535E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84B72989875500DF535E /* TabBarViewController.swift */; };
 		49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49961820298A5FD6003E4AF3 /* FriendsViewController.swift */; };
 		49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49961821298A5FD6003E4AF3 /* FriendsViewController.xib */; };
+		49AF61A8299AA59600CA1DDF /* ConfigEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF61A7299AA59600CA1DDF /* ConfigEmail.swift */; };
+		49AF61AB299AB7D000CA1DDF /* UIView+Twitching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */; };
 		49CE63AA299135AB008D188A /* CheckFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63A9299135AB008D188A /* CheckFields.swift */; };
 		49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AB29914E8F008D188A /* RegisterService.swift */; };
 		49CE63AE29914FA1008D188A /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AD29914FA1008D188A /* LoginModel.swift */; };
@@ -87,6 +89,8 @@
 		498D84B72989875500DF535E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		49961820298A5FD6003E4AF3 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		49961821298A5FD6003E4AF3 /* FriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsViewController.xib; sourceTree = "<group>"; };
+		49AF61A7299AA59600CA1DDF /* ConfigEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigEmail.swift; sourceTree = "<group>"; };
+		49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Twitching.swift"; sourceTree = "<group>"; };
 		49CE63A9299135AB008D188A /* CheckFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckFields.swift; sourceTree = "<group>"; };
 		49CE63AB29914E8F008D188A /* RegisterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterService.swift; sourceTree = "<group>"; };
 		49CE63AD29914FA1008D188A /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				49076078298A728400AFCF27 /* UIImageView+Circle.swift */,
+				49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -208,6 +213,7 @@
 				49146AB429856C1F00DF15A5 /* AppFiles */,
 				49076077298A727700AFCF27 /* Extensions */,
 				49826A4B2992C5DE009B8C30 /* Common */,
+				49AF61A9299AA5D300CA1DDF /* FIreBase */,
 				494BF1AA299527B000A932D8 /* DTO */,
 				49146AB529856C2F00DF15A5 /* StartScene */,
 				49146ABA29857D2B00DF15A5 /* RegisterScene */,
@@ -338,6 +344,14 @@
 				49076074298A6B2500AFCF27 /* FriendsTableViewCell.xib */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		49AF61A9299AA5D300CA1DDF /* FIreBase */ = {
+			isa = PBXGroup;
+			children = (
+				49AF61A7299AA59600CA1DDF /* ConfigEmail.swift */,
+			);
+			path = FIreBase;
 			sourceTree = "<group>";
 		};
 		49CE63A829913576008D188A /* Model */ = {
@@ -494,6 +508,8 @@
 				49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */,
 				4914A7F9298527C40076F03C /* StartViewController.swift in Sources */,
 				49CE63B029915103008D188A /* RegisterResponse.swift in Sources */,
+				49AF61AB299AB7D000CA1DDF /* UIView+Twitching.swift in Sources */,
+				49AF61A8299AA59600CA1DDF /* ConfigEmail.swift in Sources */,
 				4914A7F5298527C40076F03C /* AppDelegate.swift in Sources */,
 				49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,

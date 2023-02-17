@@ -11,12 +11,14 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Outlets
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var loginErrorLabel: UILabel!
     @IBOutlet weak var passwordTextField: UITextField!
     
     //MARK: - Inits
-    var delegate: StartViewControllerDelegate?
-    var authService = AuthModel()
-    var checkFields = CheckFields()
+    weak var delegate: StartViewControllerDelegate?
+    lazy var authService = AuthModel()
+    lazy var checkFields = CheckFields()
+    var userDefault = UserDefaults.standard
 
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {
@@ -24,34 +26,9 @@ final class AuthViewController: UIViewController {
     }
     
     @IBAction func logInChat(_ sender: Any) {
-        let tabBarVC = TabBarViewController()
-        let email = emailTextField.text ?? ""
-        let password = passwordTextField.text ?? ""
-        let loginField = LoginModel(email: email, password: password)
+        logincChat() 
+    }
         
-        if checkFields.isValidEmail(email) {
-            authService.authInApp(loginField) { [weak self] response in
-                switch response {
-                    
-                case .success:
-                    print("SUCCES")
-                    self?.view.insertSubview(tabBarVC.view, belowSubview: tabBarVC.view)
-                    
-                case .notVerify:
-                    print("NOT VEREFY")
-                    
-                case .error:
-                    print("ERRRO AUTHVC")
-                }
-            }
-        }
-    }
-    
-    //MARK: - LifeCycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     //MARK: - Methods
     //скрытие клавиатуры по тапу
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -59,3 +36,66 @@ final class AuthViewController: UIViewController {
     }
 }
 
+private extension AuthViewController {
+    private func logincChat() {
+        let email = emailTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        let loginField = LoginModel(email: email, password: password)
+        
+        if email.isEmpty && password.isEmpty  {
+            print("Email or passwords is Empty")
+            loginErrorLabel.isHidden = false
+            loginErrorLabel.twitching(duration: 0.5)
+            return
+        }
+
+        if !checkFields.isValidEmail(email)  {
+            print("Error Email")
+            loginErrorLabel.isHidden = false
+            loginErrorLabel.twitching(duration: 0.5)
+            return
+        }
+
+        if !checkFields.isPasswordValid(password) {
+            print("Error Password")
+            loginErrorLabel.isHidden = false
+            loginErrorLabel.twitching(duration: 0.5)
+            return
+        }
+        
+        if checkFields.isValidEmail(email) {
+            authService.authInApp(loginField) { [weak self] response in
+                switch response {
+                    
+                case .success:
+                    print("success")
+//                    self?.userDefault.set(true, forKey: "isLogin")
+                    self?.delegate?.openChat()
+                    
+                case .errorAccountNotVerified:
+                    print("errorAccountNotVerified")
+                    self?.showAlert()
+                    
+                case .errorLogin:
+                    print("errorLogin")
+                    self?.loginErrorLabel.isHidden = false
+                    self?.loginErrorLabel.twitching(duration: 0.5)
+                                        
+                case .error:
+                    print("error")
+                    self?.loginErrorLabel.isHidden = false
+                    self?.loginErrorLabel.twitching(duration: 0.5)
+                }
+            }
+        }
+    }
+
+    private func showAlert() {
+        let title = "Активация"
+        let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertButton = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(alertButton)
+        present(alert, animated: true)
+    }
+}

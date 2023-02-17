@@ -11,20 +11,32 @@ import FirebaseFirestore
 
 class AuthModel {
     
+    lazy var configEmail = ConfigEmail()
+    
     func authInApp(_ data: LoginModel, completion: @escaping (AuthResponse) -> ()) {
-        Auth.auth().signIn(withEmail: data.email, password: data.password) { result, error in
-            if error != nil {
-                completion(.error)
-            } else {
-                if let result = result {
-                    if result.user.isEmailVerified {
+        DispatchQueue.global(qos: .userInitiated).async {
+            Auth.auth().signIn(withEmail: data.email, password: data.password) { result, error in
+                DispatchQueue.main.async {
+                    guard error == nil else {
+                        completion(.error)
+                        return
+                    }
+
+                    guard let user = result?.user else {
+                        completion(.errorLogin)
+                        return
+                    }
+
+                    if user.isEmailVerified {
                         completion(.success)
                     } else {
-                        completion(.notVerify)
+                        self.configEmail.configEmail()
+                        completion(.errorAccountNotVerified)
                     }
                 }
             }
         }
     }
 }
+
 

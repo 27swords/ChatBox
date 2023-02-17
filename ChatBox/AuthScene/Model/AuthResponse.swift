@@ -8,5 +8,5 @@
 import Foundation
 
 enum AuthResponse {
-    case success, notVerify, error
+    case success, errorAccountNotVerified, errorLogin, error
 }

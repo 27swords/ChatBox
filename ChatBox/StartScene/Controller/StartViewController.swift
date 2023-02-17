@@ -7,21 +7,24 @@
 
 import UIKit
 
-protocol StartViewControllerDelegate {
+protocol StartViewControllerDelegate: AnyObject {
     func openRegisterVC()
     func openAuthVC()
     func closeVC()
+    func openChat()
 }
+
 
 class StartViewController: UIViewController {
     
-    var delegate: StartViewControllerDelegate?
-    var authVC = AuthViewController()
-    var registerVC = RegisterViewController()
+    weak var delegate: StartViewControllerDelegate?
+    lazy var authVC = AuthViewController()
+    lazy var registerVC = RegisterViewController()
+    lazy var tabBarVC = TabBarViewController()
                 
     //MARK: - IBActions
-   @IBAction func pushRegister(_ sender: Any) {
-       delegate?.openRegisterVC()
+    @IBAction func pushRegister(_ sender: Any) {
+        delegate?.openRegisterVC()
     }
 
     @IBAction func pushLogin(_ sender: Any) {
@@ -39,16 +42,26 @@ class StartViewController: UIViewController {
 
 extension StartViewController: StartViewControllerDelegate {
     func openRegisterVC() {
-       self.view.insertSubview(registerVC.view, belowSubview: registerVC.view)
+        self.view.addSubview(registerVC.view)
     }
     
     func openAuthVC() {
-        self.view.insertSubview(authVC.view, belowSubview: authVC.view)
+        self.view.addSubview(authVC.view)
     }
     
+    func openChat() {
+        let navController = UINavigationController(rootViewController: tabBarVC)
+        self.view.addSubview(navController.view)
+        authVC.view.removeFromSuperview()
+        delegate = nil
+    }
+
+
+
     func closeVC() {
         authVC.view.removeFromSuperview()
         registerVC.view.removeFromSuperview()
     }
 }
+
 

@@ -11,50 +11,48 @@ import FirebaseFirestore
 
 final class RegisterService {
     
+    lazy var configEmail = ConfigEmail()
+    
     //MARK: - Methods
     func createNewUser(_ data: LoginModel, completion: @escaping (RegisterResponse) -> ()) {
-        Auth.auth().createUser(withEmail: data.email, password: data.password) { result, error in
-            guard error == nil else {
+        DispatchQueue.global(qos: .userInitiated).async {
+            Auth.auth().createUser(withEmail: data.email, password: data.password) { result, error in
                 DispatchQueue.main.async {
-                    self.emailIsBusy(data: data)
-                    completion(.alreadyInUse)
+                    guard error == nil else {
+                        self.emailIsBusy(data: data)
+                        completion(.alreadyInUse)
+                        return
+                    }
+                    guard let result = result else {
+                        completion(.error)
+                        return
+                    }
+                    let userUid = result.user.uid
+                    let email = data.email
+                    let data: [String: Any] = ["email": email]
+                    Firestore.firestore().collection("users").document(userUid).setData(data)
+                    self.configEmail.configEmail()
+                    completion(.success)
                 }
-                return
-            }
-            guard let result = result else {
-                completion(.error)
-                return
-            }
-            let userUid = result.user.uid
-            let email = data.email
-            let data: [String: Any] = ["email": email]
-            Firestore.firestore().collection("users").document(userUid).setData(data)
-            DispatchQueue.main.async {
-                self.configEmail()
-                completion(.success)
             }
         }
     }
-    
-    //потверждение email
-    func configEmail() {
-        Auth.auth().currentUser?.sendEmailVerification(completion: { error in
-            if let error = error {
-                print("error configEmail: \(error)")
-            }
-        })
-    }
-    
+        
     //проверка зарегестрирован ли email
     func emailIsBusy(data: LoginModel) {
-        Auth.auth().fetchSignInMethods(forEmail: data.email) { signInMethods, error in
-            if let error = error {
-                print("error emailIsBusy: \(error)")
-            } else if signInMethods == nil {
-                // электронная почта не используется
-            } else {
-                // электронная почта уже используется
+        DispatchQueue.global(qos: .userInitiated).async {
+            Auth.auth().fetchSignInMethods(forEmail: data.email) { signInMethods, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("error emailIsBusy: \(error)")
+                    } else if signInMethods == nil {
+                        // электронная почта не используется
+                    } else {
+                        // электронная почта уже используется
+                    }
+                }
             }
         }
     }
 }
+
