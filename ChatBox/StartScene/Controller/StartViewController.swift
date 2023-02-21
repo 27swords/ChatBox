@@ -53,7 +53,7 @@ extension StartViewController: StartViewControllerDelegate {
         let navController = UINavigationController(rootViewController: tabBarVC)
         self.view.addSubview(navController.view)
         authVC.view.removeFromSuperview()
-        delegate = nil
+        delegate = nil  
     }
 
 

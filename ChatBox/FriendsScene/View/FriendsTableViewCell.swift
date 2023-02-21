@@ -7,10 +7,14 @@
 
 import UIKit
 
-class FriendsTableViewCell: UITableViewCell {
+final class FriendsTableViewCell: UITableViewCell {
 
+    //MARK: - Oultelts
+    @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var avatarImage: UIImageView!
     
+    
+    //MARK: - LifeCycle
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -26,4 +30,8 @@ class FriendsTableViewCell: UITableViewCell {
         self.contentView.layoutIfNeeded()
     }
     
+    //MARK: - Methods
+    func cunfigureCell(users: String) {
+        userNameLabel.text = users
+    }
 }

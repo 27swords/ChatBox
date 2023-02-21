@@ -69,7 +69,7 @@ private extension AuthViewController {
                     
                 case .success:
                     print("success")
-//                    self?.userDefault.set(true, forKey: "isLogin")
+                    self?.userDefault.set(true, forKey: "isLogin")
                     self?.delegate?.openChat()
                     
                 case .errorAccountNotVerified:

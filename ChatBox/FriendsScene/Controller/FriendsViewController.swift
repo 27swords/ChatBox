@@ -9,18 +9,34 @@ import UIKit
 
 final class FriendsViewController: UIViewController {
 
+    //MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     
+    
+    //MARK: - Inits
+    var service = FriendsService()
+    var users = [CurrentUser]()
+    
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        getUsers()
+    }
+    
+    func getUsers() {
+        service.getUsersList { users in
+            self.users = users
+            self.tableView.reloadData()
+        }
     }
 }
 
+//MARK: - TableView extension
 extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -29,12 +45,22 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         else {
             return UITableViewCell()
         }
+        
+        let usersCell = users[indexPath.row]
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+                // Выполнеение трудоемкую операцию (например, загрузку изображения) в фоновом потоке
+               
+                DispatchQueue.main.async {
+                    // Обновите пользовательский интерфейс в главном потоке
+                    cell.cunfigureCell(users: usersCell.email)
+                }
+            }
         return cell
     }
-    
-    
 }
 
+//MARK: - Private Extension
 private extension FriendsViewController {
     func setupTableView() {
         tableView.dataSource = self
