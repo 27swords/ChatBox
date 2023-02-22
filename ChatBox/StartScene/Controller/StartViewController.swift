@@ -14,7 +14,6 @@ protocol StartViewControllerDelegate: AnyObject {
     func openChat()
 }
 
-
 class StartViewController: UIViewController {
     
     weak var delegate: StartViewControllerDelegate?

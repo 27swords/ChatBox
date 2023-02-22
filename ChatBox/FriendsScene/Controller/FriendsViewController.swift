@@ -14,7 +14,7 @@ final class FriendsViewController: UIViewController {
     
     
     //MARK: - Inits
-    var service = FriendsService()
+    lazy var service = FriendsService()
     var users = [CurrentUser]()
     
     //MARK: - LifeCycle
@@ -57,6 +57,14 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ChatViewController()
+        let userId = users[indexPath.row].id
+        vc.otherID = userId
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

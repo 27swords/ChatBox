@@ -14,26 +14,17 @@ final class ChatViewController: MessagesViewController {
     //MARK: - Inits
     var chatID: String?
     var otherID: String?
-    let service = ChatService()
-    let selfSender = Sender(senderId: "1", displayName: "Me")
-    let otherSender = Sender(senderId: "2", displayName: "alex")
+    lazy var service = ChatService()
+    let selfSender = Sender(senderId: "1", displayName: "")
+    let otherSender = Sender(senderId: "2", displayName: "")
     
     var messages = [Message]()
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        messages.append(Message(
-            sender: selfSender,
-            messageId: "1", sentDate: Date().addingTimeInterval(-11200),
-            kind: .text("Hello")))
-        
-        messages.append(Message(
-            sender: otherSender,
-            messageId: "2", sentDate: Date().addingTimeInterval(-10200),
-            kind: .text("Hello!!!")))
-        
         setupMessageCollectionView()
         setupSendButton()
+        searchChat()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,6 +35,34 @@ final class ChatViewController: MessagesViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    //MARK: - Methods
+    
+    func searchChat() {
+        guard chatID == nil else { return }
+        service.getConversationsId(otherId: otherID ?? "") { [weak self] result in
+            switch result {
+            case .success(let chatId):
+                self?.chatID = chatId
+                self?.getMessages(chatId: chatId)
+            case .failure(let error):
+                print("Error fetching conversation ID: \(error.localizedDescription)")
+                // Handle the error as needed
+            }
+        }
+    }
+    
+    func getMessages(chatId: String) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            self.service.getAllMessages(chatId: chatId) { messages in
+                DispatchQueue.main.async {
+                    self.messages = messages
+                    self.messagesCollectionView.reloadDataAndKeepOffset()
+                }
+            }
+        }
     }
 }
 
@@ -68,14 +87,15 @@ extension ChatViewController: MessagesDisplayDelegate, MessagesLayoutDelegate, M
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        let message = Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text(text))
+        let message = Message(sender: selfSender, messageId: "", sentDate: Date(), kind: .text(text))
         
         messages.append(message)
-        service.sendMessage(otherId: self.otherID, conversationId: self.chatID, message: message, text: text) { [weak self] isSend in
+        service.sendMessage(otherId: self.otherID, conversationId: self.chatID, text: text) { [weak self] convoId in
             DispatchQueue.main.async {
                 inputBar.inputTextView.text = nil
                 self?.messagesCollectionView.reloadDataAndKeepOffset()
             }
+            self?.chatID = convoId
         }
     }
 }
@@ -83,6 +103,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 //MARK: - Private Extension
 private extension ChatViewController {
 
+    //create CollectionView
     func setupMessageCollectionView() {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self

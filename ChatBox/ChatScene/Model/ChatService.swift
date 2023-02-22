@@ -11,39 +11,166 @@ import FirebaseFirestore
 
 final class ChatService {
     
-    func sendMessage(otherId: String?, conversationId: String?, message: Message, text: String, completion: @escaping (Bool) -> ()) {
-        if conversationId == nil {
-            
-        } else {
-            let message: [String: Any] = [
-                "data": Date(),
-                "sender": message.sender.senderId,
-                "text": text
-            ]
-            
-            Firestore.firestore().collection("conversations").document(conversationId ?? String()).collection("messages").addDocument(data: message) { error in
+    func sendMessage(otherId: String?, conversationId: String?, text: String, completion: @escaping (String) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion("")
+            return
+        }
+
+        let collections = Firestore.firestore()
+        let messageData: [String: Any] = [
+            "date": Date(),
+            "sender": uid,
+            "text": text
+        ]
+
+        if let convoId = conversationId {
+            let messageRef = collections.collection("conversations").document(convoId).collection("messages").document()
+            messageRef.setData(messageData) { error in
                 if error == nil {
-                    completion(true)
-                } else {
-                    completion(false)
+                    completion(convoId)
+                }
+            }
+        } else {
+            guard let otherId = otherId else {
+                return
+            }
+            
+            getConversationsId(otherId: otherId) { result in
+                switch result {
+                case .success(let convoId):
+                    let messageRef = collections.collection("conversations").document(convoId).collection("messages").document()
+                    messageRef.setData(messageData) { error in
+                        if error == nil {
+                            completion(convoId)
+                        }
+                    }
+                case .failure(_):
+                    let convoId = UUID().uuidString
+                    
+                    let selfConversationData: [String: Any] = [
+                        "date": Date(),
+                        "otherId": otherId
+                    ]
+                    
+                    let otherConversationData: [String: Any] = [
+                        "date": Date(),
+                        "otherId": uid
+                    ]
+                    
+                    let convoData: [String: Any] = [
+                        "date": Date(),
+                        "members": [uid, otherId]
+                    ]
+                    
+                    let selfConversationRef = collections.collection("users").document(uid).collection("conversations").document(convoId)
+                    let otherConversationRef = collections.collection("users").document(otherId).collection("conversations").document(convoId)
+                    let convoRef = collections.collection("conversations").document(convoId)
+                    
+                    convoRef.setData(convoData) { error in
+                        if error == nil {
+                            selfConversationRef.setData(selfConversationData)
+                            otherConversationRef.setData(otherConversationData)
+                            
+                            let messageRef = convoRef.collection("messages").document()
+                            messageRef.setData(messageData) { error in
+                                if error == nil {
+                                    completion(convoId)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-    
+
+
     func updateConversations() {
         
     }
     
-    func getConversationsId() {
+    func getConversationsId(otherId: String, completion: @escaping (Result<String, Error>) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(.failure(NSError(domain: "Auth error", code: 401, userInfo: nil)))
+            return
+        }
+
+        let conversationRef = Firestore.firestore()
+            .collection("users")
+            .document(uid)
+            .collection("conversations")
+            .whereField("otherId", isEqualTo: otherId)
+            .limit(to: 1)
         
+        conversationRef.getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let document = snapshot?.documents.first else {
+                completion(.failure(NSError(domain: "Document error", code: 404, userInfo: nil)))
+                return
+            }
+
+
+            completion(.success(document.documentID))
+        }
     }
+
+
     
-    func getAllMessages() {
+    func getAllMessages(chatId: String, completion: @escaping ([Message]) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
         
+        let db = Firestore.firestore()
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            db.collection("conversations")
+                .document(chatId)
+                .collection("messages")
+                .limit(to: 50)
+                .order(by: "date", descending: false)
+                .addSnapshotListener { snapshot, error in
+                    guard let snapshot = snapshot, error == nil, !snapshot.documents.isEmpty else {
+                        return
+                    }
+                    
+                    var messages = [Message]()
+                    
+                    for document in snapshot.documents {
+                        let data = document.data()
+                        let userId = data["sender"] as? String
+                        let messageId = document.documentID
+                       
+                        let date = data["date"] as? Timestamp
+                        let sentDate = date?.dateValue()
+                        
+                        let text = data["text"] as? String
+                        
+                        let sender = Sender(senderId: userId == uid ? "1" : "2", displayName: "")
+                        
+                        messages.append(Message(
+                            sender: sender,
+                            messageId: messageId,
+                            sentDate: sentDate ?? Date(),
+                            kind: .text(text ?? "")
+                        ))
+                    }
+                    
+                    DispatchQueue.main.async {
+                        completion(messages)
+                    }
+                }
+        }
     }
+
     
     func getOneMessage() {
         
     }
 }
+
