@@ -44,6 +44,7 @@
 		4914A7FE298527C70076F03C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4914A7FD298527C70076F03C /* Assets.xcassets */; };
 		4914A801298527C70076F03C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4914A7FF298527C70076F03C /* LaunchScreen.storyboard */; };
 		4914A809298529E40076F03C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4914A808298529E40076F03C /* GoogleService-Info.plist */; };
+		495441B729A76B2F00D153B3 /* ChatCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495441B629A76B2F00D153B3 /* ChatCollectionViewCell.swift */; };
 		49645F3629A519E700AB9AF2 /* FriendsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49645F3529A519E700AB9AF2 /* FriendsModel.swift */; };
 		4969F65B29882FD900CD9823 /* RegisterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4969F65929882FD900CD9823 /* RegisterViewController.xib */; };
 		4969F65F298839BB00CD9823 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4969F65D298839BB00CD9823 /* RegisterViewController.swift */; };
@@ -84,6 +85,7 @@
 		4914A800298527C70076F03C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4914A802298527C70076F03C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4914A808298529E40076F03C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		495441B629A76B2F00D153B3 /* ChatCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCollectionViewCell.swift; sourceTree = "<group>"; };
 		49645F3529A519E700AB9AF2 /* FriendsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsModel.swift; sourceTree = "<group>"; };
 		4969F65929882FD900CD9823 /* RegisterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RegisterViewController.xib; sourceTree = "<group>"; };
 		4969F65D298839BB00CD9823 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
@@ -233,7 +235,6 @@
 				4996181D298A5F54003E4AF3 /* FriendsScene */,
 				49D314A22989803F00AEA7BE /* ChatListScene */,
 				49818AF729A39AB200328CE8 /* ChatScene */,
-				4914A7FD298527C70076F03C /* Assets.xcassets */,
 				4914A802298527C70076F03C /* Info.plist */,
 				4914A808298529E40076F03C /* GoogleService-Info.plist */,
 			);
@@ -313,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				49818AFB29A39AE700328CE8 /* ChatViewController.swift */,
+				4914A7FD298527C70076F03C /* Assets.xcassets */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -320,6 +322,7 @@
 		49818AF929A39AC300328CE8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				495441B629A76B2F00D153B3 /* ChatCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -559,6 +562,7 @@
 				49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */,
 				4914A7F9298527C40076F03C /* StartViewController.swift in Sources */,
 				49CE63B029915103008D188A /* RegisterResponse.swift in Sources */,
+				495441B729A76B2F00D153B3 /* ChatCollectionViewCell.swift in Sources */,
 				49AF61AB299AB7D000CA1DDF /* UIView+Twitching.swift in Sources */,
 				49645F3629A519E700AB9AF2 /* FriendsModel.swift in Sources */,
 				497F0E96299F92F000266CC1 /* FriendsService.swift in Sources */,

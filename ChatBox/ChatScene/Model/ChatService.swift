@@ -35,51 +35,39 @@ final class ChatService {
             guard let otherId = otherId else {
                 return
             }
-            
-            getConversationsId(otherId: otherId) { result in
-                switch result {
-                case .success(let convoId):
-                    let messageRef = collections.collection("conversations").document(convoId).collection("messages").document()
-                    messageRef.setData(messageData) { error in
-                        if error == nil {
-                            completion(convoId)
-                        }
-                    }
-                case .failure(_):
-                    let convoId = UUID().uuidString
-                    
-                    let selfConversationData: [String: Any] = [
-                        "date": Date(),
-                        "otherId": otherId
-                    ]
-                    
-                    let otherConversationData: [String: Any] = [
-                        "date": Date(),
-                        "otherId": uid
-                    ]
-                    
-                    let convoData: [String: Any] = [
-                        "date": Date(),
-                        "members": [uid, otherId]
-                    ]
-                    
-                    let selfConversationRef = collections.collection("users").document(uid).collection("conversations").document(convoId)
-                    let otherConversationRef = collections.collection("users").document(otherId).collection("conversations").document(convoId)
-                    let convoRef = collections.collection("conversations").document(convoId)
-                    
-                    convoRef.setData(convoData) { error in
-                        if error == nil {
-                            selfConversationRef.setData(selfConversationData)
-                            otherConversationRef.setData(otherConversationData)
-                            
-                            let messageRef = convoRef.collection("messages").document()
-                            messageRef.setData(messageData) { error in
-                                if error == nil {
-                                    completion(convoId)
-                                }
-                            }
-                        }
-                    }
+
+            let convoId = UUID().uuidString
+
+            let selfConversationData: [String: Any] = [
+                "date": Date(),
+                "otherId": otherId
+            ]
+
+            let otherConversationData: [String: Any] = [
+                "date": Date(),
+                "otherId": uid
+            ]
+
+            let convoData: [String: Any] = [
+                "date": Date(),
+                "members": [uid, otherId]
+            ]
+
+            let batch = collections.batch()
+
+            let selfConversationRef = collections.collection("users").document(uid).collection("conversations").document(convoId)
+            let otherConversationRef = collections.collection("users").document(otherId).collection("conversations").document(convoId)
+            let convoRef = collections.collection("conversations").document(convoId)
+            let messageRef = convoRef.collection("messages").document()
+
+            batch.setData(convoData, forDocument: convoRef)
+            batch.setData(selfConversationData, forDocument: selfConversationRef)
+            batch.setData(otherConversationData, forDocument: otherConversationRef)
+            batch.setData(messageData, forDocument: messageRef)
+
+            batch.commit() { error in
+                if error == nil {
+                    completion(convoId)
                 }
             }
         }
@@ -96,31 +84,34 @@ final class ChatService {
             return
         }
 
-        let conversationRef = Firestore.firestore()
-            .collection("users")
-            .document(uid)
-            .collection("conversations")
-            .whereField("otherId", isEqualTo: otherId)
-            .limit(to: 1)
-        
-        conversationRef.getDocuments { snapshot, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        // Use a cached Firestore instance
+        let firestore = Firestore.firestore()
+
+        // Use a background thread for network operations
+        DispatchQueue.global(qos: .background).async {
+            let conversationRef = firestore
+                .collection("users")
+                .document(uid)
+                .collection("conversations")
+                .whereField("otherId", isEqualTo: otherId)
+                .limit(to: 1)
+
+            conversationRef.getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let document = snapshot?.documents.first else {
+                    completion(.failure(NSError(domain: "Document error", code: 404, userInfo: nil)))
+                    return
+                }
+
+                completion(.success(document.documentID))
             }
-
-            guard let document = snapshot?.documents.first else {
-                completion(.failure(NSError(domain: "Document error", code: 404, userInfo: nil)))
-                return
-            }
-
-
-            completion(.success(document.documentID))
         }
     }
 
-
-    
     func getAllMessages(chatId: String, completion: @escaping ([Message]) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else {
             return
@@ -132,7 +123,6 @@ final class ChatService {
             db.collection("conversations")
                 .document(chatId)
                 .collection("messages")
-                .limit(to: 50)
                 .order(by: "date", descending: false)
                 .addSnapshotListener { snapshot, error in
                     guard let snapshot = snapshot, error == nil, !snapshot.documents.isEmpty else {

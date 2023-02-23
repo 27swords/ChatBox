@@ -12,7 +12,7 @@ import FirebaseFirestore
 final class RegisterService {
     
     lazy var configEmail = ConfigEmail()
-    
+        
     //MARK: - Methods
     func createNewUser(_ data: LoginModel, completion: @escaping (RegisterResponse) -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {
