@@ -9,5 +9,5 @@ import Foundation
 
 struct CurrentUser {
     var id: String
-    var email: String
+    var nickname: String
 }

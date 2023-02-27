@@ -12,8 +12,10 @@ final class RegisterViewController: UIViewController {
     //MARK: - Outlets
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var errorEmail: UILabel!
+    @IBOutlet weak var errorNicknameLabel: UILabel!
     @IBOutlet weak var passTextField: UITextField!
     @IBOutlet weak var repPassTextField: UITextField!
+    @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var errorPassword: UILabel!
     
     //MARK: - Inits
@@ -41,10 +43,13 @@ private extension RegisterViewController {
     
     // Регистрация пользователя и проверка входных данных
     private func createUser() {
-        let email = emailTextField.text ?? ""
-        let password = passTextField.text ?? ""
-        let repPassword = repPassTextField.text ?? ""
+        guard let email = emailTextField.text else { return }
+        guard let nickName = nicknameTextField.text else { return }
+        guard let password = passTextField.text else { return }
+        guard let repPassword = repPassTextField.text else { return }
         
+        let data = LoginModel(email: email, password: password, nickname: nickName)
+                
         errorEmail.text = nil
         errorPassword.text = nil
         
@@ -74,24 +79,30 @@ private extension RegisterViewController {
             errorPassword.twitching(duration: 0.5)
             return
         }
-                
-        let data = LoginModel(email: email, password: password)
+        
         serviceUser.createNewUser(data) { [weak self] response in
             switch response {
             case .success:
                 print("Success")
                 self?.showAlert()
                 self?.delegate?.openAuthVC()
-                
-            case .alreadyInUse:
+
+            case .emailAlreadyInUse:
                 print("already In Use")
                 self?.errorEmail.text = "E-mail уже используется"
                 self?.errorEmail.twitching(duration: 0.5)
-                
+
             case .error:
                 print("Error")
                 self?.errorEmail.text = "Ошибка регистрации"
                 self?.errorEmail.twitching(duration: 0.5)
+
+            case .nicknameAlreadyInUse:
+                self?.errorNicknameLabel.text = "Имя пользователя занято"
+                self?.errorNicknameLabel.twitching(duration: 0.5)
+           
+            case .unknownError:
+                print("unknownError")
             }
         }
     }

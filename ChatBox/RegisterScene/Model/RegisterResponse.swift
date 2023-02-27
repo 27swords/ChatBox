@@ -8,7 +8,7 @@
 import Foundation
 
 enum RegisterResponse {
-    case success, alreadyInUse, error
+    case success, emailAlreadyInUse, nicknameAlreadyInUse, error, unknownError
 }
 
 

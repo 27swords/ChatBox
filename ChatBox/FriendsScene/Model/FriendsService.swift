@@ -25,8 +25,8 @@ final class FriendsService {
 
             for document in snapshot.documents {
                 let data = document.data()
-                if let email = data["email"] as? String {
-                    let user = CurrentUser(id: document.documentID, email: email)
+                if let nickname = data["nickname"] as? String {
+                    let user = CurrentUser(id: document.documentID, nickname: nickname)
                     currentUsers.append(user)
                 }
             }
@@ -34,7 +34,6 @@ final class FriendsService {
         }
     }
 }
-
 
 
 

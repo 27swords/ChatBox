@@ -26,7 +26,7 @@ final class AuthViewController: UIViewController {
     }
     
     @IBAction func logInChat(_ sender: Any) {
-        logincChat() 
+        loginChat() 
     }
         
     //MARK: - Methods
@@ -37,10 +37,10 @@ final class AuthViewController: UIViewController {
 }
 
 private extension AuthViewController {
-    private func logincChat() {
-        let email = emailTextField.text ?? ""
-        let password = passwordTextField.text ?? ""
-        let loginField = LoginModel(email: email, password: password)
+    private func loginChat() {
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        let loginField = LoginModel(email: email, password: password, nickname: email)
         
         if email.isEmpty && password.isEmpty  {
             print("Email or passwords is Empty")

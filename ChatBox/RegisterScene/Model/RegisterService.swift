@@ -10,45 +10,70 @@ import Firebase
 import FirebaseFirestore
 
 final class RegisterService {
-    
-    lazy var configEmail = ConfigEmail()
-        
+
+    let db = Firestore.firestore()
+    let configEmail = ConfigEmail()
+
     //MARK: - Methods
+
     func createNewUser(_ data: LoginModel, completion: @escaping (RegisterResponse) -> ()) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            Auth.auth().createUser(withEmail: data.email, password: data.password) { result, error in
-                DispatchQueue.main.async {
-                    guard error == nil else {
-                        self.emailIsBusy(data: data)
-                        completion(.alreadyInUse)
-                        return
-                    }
-                    guard let result = result else {
-                        completion(.error)
-                        return
-                    }
-                    let userUid = result.user.uid
-                    let email = data.email
-                    let data: [String: Any] = ["email": email]
-                    Firestore.firestore().collection("users").document(userUid).setData(data)
-                    self.configEmail.configEmail()
-                    completion(.success)
-                }
+        let group = DispatchGroup()
+
+        var emailIsBusy = false
+        var nicknameIsBusy = false
+
+        // Проверка почты
+        group.enter()
+        Auth.auth().fetchSignInMethods(forEmail: data.email) { signInMethods, error in
+            if let error = error {
+                print("error emailIsBusy: \(error)")
+            } else if signInMethods == nil {
+                // почта не используется
+            } else {
+                emailIsBusy = true
             }
+            group.leave()
         }
-    }
-        
-    //проверка зарегестрирован ли email
-    func emailIsBusy(data: LoginModel) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            Auth.auth().fetchSignInMethods(forEmail: data.email) { signInMethods, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        print("error emailIsBusy: \(error)")
-                    } else if signInMethods == nil {
-                        // электронная почта не используется
+
+        // Проверка nickname
+        group.enter()
+        db.collection("users")
+            .whereField("nickname", isEqualTo: data.nickname)
+            .getDocuments() { snapshot, error in
+                if let error = error {
+                    print("error nicknameIsBusy: \(error)")
+                    nicknameIsBusy = true
+                } else {
+                    nicknameIsBusy = snapshot?.documents.count ?? 0 > 0
+                }
+                group.leave()
+        }
+
+        group.notify(queue: DispatchQueue.main) {
+            if emailIsBusy {
+                completion(.emailAlreadyInUse)
+            } else if nicknameIsBusy {
+                completion(.nicknameAlreadyInUse)
+            } else {
+                // Создать нового пользователя
+                Auth.auth().createUser(withEmail: data.email, password: data.password) { result, error in
+                    if error != nil {
+                        completion(.error)
+                    } else if let result = result {
+                        let userUid = result.user.uid
+                        let email = data.email
+                        let nickname = data.nickname
+                        let data: [String: Any] = ["email": email, "nickname": nickname]
+                        self.db.collection("users").document(userUid).setData(data) { error in
+                            if error != nil {
+                                completion(.error)
+                            } else {
+                                self.configEmail.configEmail()
+                                completion(.success)
+                            }
+                        }
                     } else {
-                        // электронная почта уже используется
+                        completion(.unknownError)
                     }
                 }
             }

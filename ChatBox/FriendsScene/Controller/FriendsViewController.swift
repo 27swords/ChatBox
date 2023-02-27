@@ -12,7 +12,6 @@ final class FriendsViewController: UIViewController {
     //MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     
-    
     //MARK: - Inits
     lazy var service = FriendsService()
     var users = [CurrentUser]()
@@ -53,7 +52,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                
                 DispatchQueue.main.async {
                     // Обновите пользовательский интерфейс в главном потоке
-                    cell.cunfigureCell(users: usersCell.email)
+                    cell.cunfigureCell(users: usersCell.nickname)
                 }
             }
         return cell

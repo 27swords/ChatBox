@@ -65,7 +65,7 @@
                 </view>
                 <view contentMode="scaleToFill" id="M4h-Q5-Gsb">
                     <rect key="frame" x="71" y="440" width="266" height="40"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Пароль" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ChX-3D-ZJc">
                             <rect key="frame" x="5" y="3" width="256" height="34"/>
