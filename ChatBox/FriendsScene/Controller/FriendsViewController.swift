@@ -12,9 +12,16 @@ final class FriendsViewController: UIViewController {
     //MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     
+    //MARK: - Views
+    private lazy var refreshControl: CustomRefreshControl = {
+        let refreshControl = CustomRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        return refreshControl
+    }()
+    
     //MARK: - Inits
     lazy var service = FriendsService()
-    var users = [CurrentUser]()
+    var users = [FriendsModel]()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -23,10 +30,23 @@ final class FriendsViewController: UIViewController {
         getUsers()
     }
     
+    //MARK: - Methods
     func getUsers() {
         service.getUsersList { users in
             self.users = users
             self.tableView.reloadData()
+        }
+    }
+    
+    //MARK: - Objc Methods
+    @objc func refresh(sender: CustomRefreshControl) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.getUsers()
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                sender.endRefreshing()
+            }
         }
     }
 }
@@ -72,7 +92,10 @@ private extension FriendsViewController {
     func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.addSubview(refreshControl)
         tableView.register(UINib(nibName: String(describing: FriendsTableViewCell.self), bundle: nil),
                            forCellReuseIdentifier: String(describing: FriendsTableViewCell.self))
     }
 }
+
+

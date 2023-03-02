@@ -10,27 +10,23 @@ import Firebase
 import FirebaseFirestore
 
 final class FriendsService {
-   
-    func getUsersList(completion: @escaping ([CurrentUser]) -> ()) {
-
+    
+    func getUsersList(completion: @escaping ([FriendsModel]) -> ()) {
         let dataBase = Firestore.firestore()
-        var currentUsers = [CurrentUser]()
         guard let email = Auth.auth().currentUser?.email else { return }
 
         let query = dataBase.collection("users")
             .whereField("email", isNotEqualTo: email)
 
-        query.getDocuments { snapshot, _ in
-            guard let snapshot = snapshot else { return }
-
-            for document in snapshot.documents {
-                let data = document.data()
-                if let nickname = data["nickname"] as? String {
-                    let user = CurrentUser(id: document.documentID, nickname: nickname)
-                    currentUsers.append(user)
+        query.getDocuments { snapshot, error in
+            DispatchQueue.main.async {
+                guard let snapshot = snapshot else { return }
+                let chatListModel = snapshot.documents.compactMap { document -> FriendsModel? in
+                    guard let nickname = document.data()["nickname"] as? String else { return nil }
+                    return FriendsModel(id: document.documentID, nickname: nickname)
                 }
+                completion(chatListModel)
             }
-            completion(currentUsers)
         }
     }
 }

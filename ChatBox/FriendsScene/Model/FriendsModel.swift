@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CurrentUser {
+struct FriendsModel {
     var id: String
     var nickname: String
 }

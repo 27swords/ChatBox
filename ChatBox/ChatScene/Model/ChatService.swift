@@ -72,11 +72,6 @@ final class ChatService {
             }
         }
     }
-
-
-    func updateConversations() {
-        
-    }
     
     func getConversationsId(otherId: String, completion: @escaping (Result<String, Error>) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -113,9 +108,7 @@ final class ChatService {
     }
 
     func getAllMessages(chatId: String, completion: @escaping ([Message]) -> ()) {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            return
-        }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
         
         let db = Firestore.firestore()
         
@@ -156,11 +149,6 @@ final class ChatService {
                     }
                 }
         }
-    }
-
-    
-    func getOneMessage() {
-        
     }
 }
 

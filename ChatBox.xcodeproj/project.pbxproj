@@ -55,10 +55,6 @@
 		49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49818B0229A3B0BB00328CE8 /* ChatService.swift */; };
 		49826A492992C52B009B8C30 /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49826A482992C52B009B8C30 /* AuthModel.swift */; };
 		49826A4D2992D03E009B8C30 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49826A4C2992D03E009B8C30 /* AuthResponse.swift */; };
-		498D84AE298983DE00DF535E /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84AC298983DE00DF535E /* ChatListViewController.swift */; };
-		498D84AF298983DE00DF535E /* ChatListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 498D84AD298983DE00DF535E /* ChatListViewController.xib */; };
-		498D84B2298984F600DF535E /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84B0298984F600DF535E /* ChatTableViewCell.swift */; };
-		498D84B3298984F600DF535E /* ChatTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 498D84B1298984F600DF535E /* ChatTableViewCell.xib */; };
 		498D84B92989875500DF535E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84B72989875500DF535E /* TabBarViewController.swift */; };
 		49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49961820298A5FD6003E4AF3 /* FriendsViewController.swift */; };
 		49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49961821298A5FD6003E4AF3 /* FriendsViewController.xib */; };
@@ -68,6 +64,7 @@
 		49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AB29914E8F008D188A /* RegisterService.swift */; };
 		49CE63AE29914FA1008D188A /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AD29914FA1008D188A /* LoginModel.swift */; };
 		49CE63B029915103008D188A /* RegisterResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AF29915103008D188A /* RegisterResponse.swift */; };
+		49E1C89229B0A2F2001FF391 /* CustomRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E1C89129B0A2F2001FF391 /* CustomRefreshControl.swift */; };
 		49FF642B29883DD90047C2C3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FF642929883DD90047C2C3 /* AuthViewController.swift */; };
 		49FF642C29883DD90047C2C3 /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49FF642A29883DD90047C2C3 /* AuthViewController.xib */; };
 /* End PBXBuildFile section */
@@ -95,10 +92,6 @@
 		49818B0229A3B0BB00328CE8 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		49826A482992C52B009B8C30 /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		49826A4C2992D03E009B8C30 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
-		498D84AC298983DE00DF535E /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
-		498D84AD298983DE00DF535E /* ChatListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ChatListViewController.xib; path = ../Controller/ChatListViewController.xib; sourceTree = "<group>"; };
-		498D84B0298984F600DF535E /* ChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
-		498D84B1298984F600DF535E /* ChatTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTableViewCell.xib; sourceTree = "<group>"; };
 		498D84B72989875500DF535E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		49961820298A5FD6003E4AF3 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		49961821298A5FD6003E4AF3 /* FriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsViewController.xib; sourceTree = "<group>"; };
@@ -108,6 +101,7 @@
 		49CE63AB29914E8F008D188A /* RegisterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterService.swift; sourceTree = "<group>"; };
 		49CE63AD29914FA1008D188A /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		49CE63AF29915103008D188A /* RegisterResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterResponse.swift; sourceTree = "<group>"; };
+		49E1C89129B0A2F2001FF391 /* CustomRefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRefreshControl.swift; sourceTree = "<group>"; };
 		49FF642929883DD90047C2C3 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		49FF642A29883DD90047C2C3 /* AuthViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AuthViewController.xib; path = ../Controller/AuthViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -233,8 +227,8 @@
 				4969F66129883C4000CD9823 /* AuthScene */,
 				498D84B42989871900DF535E /* TabBarScene */,
 				4996181D298A5F54003E4AF3 /* FriendsScene */,
-				49D314A22989803F00AEA7BE /* ChatListScene */,
 				49818AF729A39AB200328CE8 /* ChatScene */,
+				4914A7FD298527C70076F03C /* Assets.xcassets */,
 				4914A802298527C70076F03C /* Info.plist */,
 				4914A808298529E40076F03C /* GoogleService-Info.plist */,
 			);
@@ -314,7 +308,6 @@
 			isa = PBXGroup;
 			children = (
 				49818AFB29A39AE700328CE8 /* ChatViewController.swift */,
-				4914A7FD298527C70076F03C /* Assets.xcassets */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -349,6 +342,7 @@
 			isa = PBXGroup;
 			children = (
 				49CE63A9299135AB008D188A /* CheckFields.swift */,
+				49E1C89129B0A2F2001FF391 /* CustomRefreshControl.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -413,33 +407,6 @@
 				49CE63AB29914E8F008D188A /* RegisterService.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		49D314A22989803F00AEA7BE /* ChatListScene */ = {
-			isa = PBXGroup;
-			children = (
-				49D314A42989805800AEA7BE /* View */,
-				49D314A32989805300AEA7BE /* Controller */,
-			);
-			path = ChatListScene;
-			sourceTree = "<group>";
-		};
-		49D314A32989805300AEA7BE /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				498D84AC298983DE00DF535E /* ChatListViewController.swift */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		49D314A42989805800AEA7BE /* View */ = {
-			isa = PBXGroup;
-			children = (
-				498D84AD298983DE00DF535E /* ChatListViewController.xib */,
-				498D84B0298984F600DF535E /* ChatTableViewCell.swift */,
-				498D84B1298984F600DF535E /* ChatTableViewCell.xib */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -536,10 +503,8 @@
 			files = (
 				4914A801298527C70076F03C /* LaunchScreen.storyboard in Resources */,
 				49076076298A6B2500AFCF27 /* FriendsTableViewCell.xib in Resources */,
-				498D84B3298984F600DF535E /* ChatTableViewCell.xib in Resources */,
 				4969F65B29882FD900CD9823 /* RegisterViewController.xib in Resources */,
 				49FF642C29883DD90047C2C3 /* AuthViewController.xib in Resources */,
-				498D84AF298983DE00DF535E /* ChatListViewController.xib in Resources */,
 				4914A809298529E40076F03C /* GoogleService-Info.plist in Resources */,
 				4914A7FE298527C70076F03C /* Assets.xcassets in Resources */,
 				4914A7FC298527C40076F03C /* Main.storyboard in Resources */,
@@ -558,8 +523,8 @@
 				49CE63AE29914FA1008D188A /* LoginModel.swift in Sources */,
 				49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */,
 				49076079298A728400AFCF27 /* UIImageView+Circle.swift in Sources */,
-				498D84AE298983DE00DF535E /* ChatListViewController.swift in Sources */,
 				49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */,
+				49E1C89229B0A2F2001FF391 /* CustomRefreshControl.swift in Sources */,
 				4914A7F9298527C40076F03C /* StartViewController.swift in Sources */,
 				49CE63B029915103008D188A /* RegisterResponse.swift in Sources */,
 				495441B729A76B2F00D153B3 /* ChatCollectionViewCell.swift in Sources */,
@@ -573,7 +538,6 @@
 				49CE63AC29914E8F008D188A /* RegisterService.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,
 				49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */,
-				498D84B2298984F600DF535E /* ChatTableViewCell.swift in Sources */,
 				49CE63AA299135AB008D188A /* CheckFields.swift in Sources */,
 				49826A492992C52B009B8C30 /* AuthModel.swift in Sources */,
 				49FF642B29883DD90047C2C3 /* AuthViewController.swift in Sources */,
