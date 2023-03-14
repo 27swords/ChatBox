@@ -19,7 +19,6 @@ class StartViewController: UIViewController {
     weak var delegate: StartViewControllerDelegate?
     lazy var authVC = AuthViewController()
     lazy var registerVC = RegisterViewController()
-    lazy var tabBarVC = TabBarViewController()
                 
     //MARK: - IBActions
     @IBAction func pushRegister(_ sender: Any) {
@@ -49,13 +48,14 @@ extension StartViewController: StartViewControllerDelegate {
     }
     
     func openChat() {
-        let navController = UINavigationController(rootViewController: tabBarVC)
-        self.view.addSubview(navController.view)
-        authVC.view.removeFromSuperview()
-        delegate = nil  
+        let tabBarVC = TabBarViewController()
+
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else {
+            return
+        }
+        window.rootViewController = tabBarVC
     }
-
-
 
     func closeVC() {
         authVC.view.removeFromSuperview()
