@@ -16,7 +16,7 @@ final class RegisterService {
 
     //MARK: - Methods
 
-    func createNewUser(_ data: LoginModel, completion: @escaping (RegisterResponse) -> ()) {
+    func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> ()) {
         let group = DispatchGroup()
 
         var emailIsBusy = false
@@ -48,7 +48,7 @@ final class RegisterService {
                 }
                 group.leave()
         }
-
+        
         group.notify(queue: DispatchQueue.main) {
             if emailIsBusy {
                 completion(.emailAlreadyInUse)
@@ -63,7 +63,7 @@ final class RegisterService {
                         let userUid = result.user.uid
                         let email = data.email
                         let nickname = data.nickname
-                        let data: [String: Any] = ["email": email, "nickname": nickname]
+                        let data: [String: Any] = ["email": email, "nickname": nickname,]
                         self.db.collection("users").document(userUid).setData(data) { error in
                             if error != nil {
                                 completion(.error)

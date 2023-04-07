@@ -13,7 +13,7 @@ class AuthModel {
     
     lazy var configEmail = ConfigEmail()
     
-    func authInApp(_ data: LoginModel, completion: @escaping (AuthResponse) -> ()) {
+    func authInApp(_ data: DTO, completion: @escaping (AuthResponse) -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {
             Auth.auth().signIn(withEmail: data.email, password: data.password) { result, error in
                 DispatchQueue.main.async {

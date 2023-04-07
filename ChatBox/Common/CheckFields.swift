@@ -9,7 +9,6 @@ import Foundation
 
 final class CheckFields {
     
-    //MARK: - Methods
     //Проверка E-mail на валидность
     func isValidEmail(_ email: String) -> Bool {
         let emailTest = NSPredicate(format:"SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}")

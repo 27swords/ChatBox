@@ -79,11 +79,9 @@ final class ChatService {
             return
         }
 
-        // Use a cached Firestore instance
         let firestore = Firestore.firestore()
 
-        // Use a background thread for network operations
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let conversationRef = firestore
                 .collection("users")
                 .document(uid)

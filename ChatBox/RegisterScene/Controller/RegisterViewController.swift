@@ -48,7 +48,7 @@ private extension RegisterViewController {
         guard let password = passTextField.text else { return }
         guard let repPassword = repPassTextField.text else { return }
         
-        let data = LoginModel(email: email, password: password, nickname: nickName)
+        let data = DTO(email: email, password: password, nickname: nickName)
                 
         errorEmail.text = nil
         errorPassword.text = nil

@@ -21,27 +21,19 @@ final class FriendsViewController: UIViewController {
     
     //MARK: - Inits
     lazy var service = FriendsService()
-    var users = [FriendsModel]()
+    var friend = [FriendsModel]()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        getUsers()
-    }
-    
-    //MARK: - Methods
-    func getUsers() {
-        service.getUsersList { users in
-            self.users = users
-            self.tableView.reloadData()
-        }
+        getFriend()
     }
     
     //MARK: - Objc Methods
     @objc func refresh(sender: CustomRefreshControl) {
         DispatchQueue.global(qos: .userInitiated).async {
-            self.getUsers()
+            self.getFriend()
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -55,7 +47,7 @@ final class FriendsViewController: UIViewController {
 extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        return friend.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,14 +57,14 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let usersCell = users[indexPath.row]
+        let friendCell = friend[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
                 // Выполнеение трудоемкую операцию (например, загрузку изображения) в фоновом потоке
                
                 DispatchQueue.main.async {
                     // Обновите пользовательский интерфейс в главном потоке
-                    cell.cunfigureCell(users: usersCell.nickname)
+                    cell.cunfigureCell(users: friendCell.nickname)
                 }
             }
         return cell
@@ -80,8 +72,8 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = ChatViewController()
-        let userId = users[indexPath.row].id
-        vc.otherID = userId
+        let friendId = friend[indexPath.row].id
+        vc.otherID = friendId
         
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -89,12 +81,24 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
 
 //MARK: - Private Extension
 private extension FriendsViewController {
-    func setupTableView() {
+    private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.addSubview(refreshControl)
         tableView.register(UINib(nibName: String(describing: FriendsTableViewCell.self), bundle: nil),
                            forCellReuseIdentifier: String(describing: FriendsTableViewCell.self))
+    }
+    
+    private func getFriend() {
+        service.getUsersList { [weak self] friends in
+            DispatchQueue.global(qos: .userInitiated).async {
+                self?.friend = friends
+                
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            }
+        }
     }
 }
 
