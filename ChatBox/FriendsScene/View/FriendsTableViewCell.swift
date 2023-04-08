@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 final class FriendsTableViewCell: UITableViewCell {
 
@@ -31,7 +32,11 @@ final class FriendsTableViewCell: UITableViewCell {
     }
     
     //MARK: - Methods
-    func cunfigureCell(users: String) {
+    func cunfigureTextCell(users: String) {
         userNameLabel.text = users
+    }
+    
+    func cunfigureImageCell(users: String) {
+        avatarImage.sd_setImage(with: URL(string: users))
     }
 }

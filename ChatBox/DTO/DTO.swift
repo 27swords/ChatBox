@@ -11,4 +11,5 @@ struct DTO {
     var email: String
     var password: String
     var nickname: String
+    var avatarURL: String?
 }

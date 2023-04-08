@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseStorage
+import SDWebImage
 
 final class FriendsViewController: UIViewController {
 
@@ -60,11 +63,10 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         let friendCell = friend[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-                // Выполнеение трудоемкую операцию (например, загрузку изображения) в фоновом потоке
+            cell.cunfigureImageCell(users: friendCell.avatarURL ?? "")
                
                 DispatchQueue.main.async {
-                    // Обновите пользовательский интерфейс в главном потоке
-                    cell.cunfigureCell(users: friendCell.nickname)
+                    cell.cunfigureTextCell(users: friendCell.nickname)
                 }
             }
         return cell
@@ -93,6 +95,7 @@ private extension FriendsViewController {
         service.getUsersList { [weak self] friends in
             DispatchQueue.global(qos: .userInitiated).async {
                 self?.friend = friends
+                
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()

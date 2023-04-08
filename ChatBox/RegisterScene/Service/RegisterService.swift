@@ -63,7 +63,8 @@ final class RegisterService {
                         let userUid = result.user.uid
                         let email = data.email
                         let nickname = data.nickname
-                        let data: [String: Any] = ["email": email, "nickname": nickname,]
+                        let avatarURL = data.avatarURL
+                        let data: [String: Any] = ["email": email, "nickname": nickname, "avatarURL": avatarURL ?? ""]
                         self.db.collection("users").document(userUid).setData(data) { error in
                             if error != nil {
                                 completion(.error)

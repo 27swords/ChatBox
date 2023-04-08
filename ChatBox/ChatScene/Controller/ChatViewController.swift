@@ -48,7 +48,6 @@ final class ChatViewController: MessagesViewController {
                 self?.getMessages(chatId: chatId)
             case .failure(let error):
                 print("Error fetching conversation ID: \(error.localizedDescription)")
-                // Handle the error as needed
             }
         }
     }

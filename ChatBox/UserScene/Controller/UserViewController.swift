@@ -49,14 +49,6 @@ final class UserViewController: UIViewController {
 //MARK: - Extension UIImagePicker
 extension UserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private func editPhoto() {
-        let imagePickerController = UIImagePickerController()
-        
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
-    }
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
 
@@ -65,11 +57,13 @@ extension UserViewController: UIImagePickerControllerDelegate, UINavigationContr
             return
         }
         
+        // загрузка аватара и отправвление его в коллекцию user
         service.uploadAvatar(image: image) { result in
             switch result {
                 
             case .success(let url):
                 self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                self.service.updateUserProfile(avatarURL: url)
             case .failure(let error):
                 print("Error uploading avatar: \(error.localizedDescription)")
             }
@@ -84,29 +78,39 @@ extension UserViewController: UIImagePickerControllerDelegate, UINavigationContr
 //MARK: - Private Extension
 private extension UserViewController {
     
+    private func editPhoto() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    // получение всех данных о пользователе
     private func userInfoGet() {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         let ref = Storage.storage().reference().child("avatars").child(currentUserId)
         
         service.userInfo { [weak self] user in
-            DispatchQueue.global(qos: .unspecified).async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 guard let self = self, let userInfo = user.first else { return }
+                
+                ref.downloadURL { (url, error) in
+                    if let error = error {
+                        print("Error getting avatar URL: \(error.localizedDescription)")
+                    } else if let url = url {
+                        self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                    }
+                }
                 DispatchQueue.main.async {
                     self.nicknameLabel.text = userInfo.nickname
                     self.emailLabel.text = userInfo.email
-                    
-                    ref.downloadURL { (url, error) in
-                        if let error = error {
-                            print("Error getting avatar URL: \(error.localizedDescription)")
-                        } else if let url = url {
-                            self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                        }
-                    }
                 }
             }
         }
     }
 
+    // выход из аккаунта
     private func logOutAcount() {
         do {
             try Auth.auth().signOut()

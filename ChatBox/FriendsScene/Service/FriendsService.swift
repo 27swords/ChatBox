@@ -23,7 +23,8 @@ final class FriendsService {
                 guard let snapshot = snapshot else { return }
                 let chatListModel = snapshot.documents.compactMap { document -> FriendsModel? in
                     guard let nickname = document.data()["nickname"] as? String else { return nil }
-                    return FriendsModel(id: document.documentID, nickname: nickname) 
+                    guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
+                    return FriendsModel(id: document.documentID, nickname: nickname, avatarURL: avatarURL) 
                 }
                 completion(chatListModel)
             }

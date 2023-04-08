@@ -10,4 +10,5 @@ import Foundation
 struct FriendsModel {
     var id: String
     var nickname: String
+    var avatarURL: String?
 }

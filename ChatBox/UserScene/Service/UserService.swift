@@ -13,7 +13,7 @@ import FirebaseStorage
 final class UserService {
     
     let dataBase = Firestore.firestore()
-    let storageRef = Storage.storage().reference()
+//    let storageRef = Storage.storage().reference()
     
     func userInfo(completion: @escaping ([UserModel]) -> ()) {
         guard let email = Auth.auth().currentUser?.email else { return }
@@ -33,6 +33,7 @@ final class UserService {
         }
     }
     
+    // сохранение изображениия в storage
     func uploadAvatar(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
         
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }
@@ -54,6 +55,18 @@ final class UserService {
                     return
                 }
                 completion(.success(url))
+            }
+        }
+    }
+    
+    //отправление url фоторафии в коллекцию user
+    func updateUserProfile(avatarURL: URL) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        
+        let userRef = Firestore.firestore().collection("users").document(currentUserId)
+        userRef.updateData(["avatarURL": avatarURL.absoluteString]) { error in
+            if let error = error {
+                print("Error updating user profile: \(error.localizedDescription)")
             }
         }
     }
