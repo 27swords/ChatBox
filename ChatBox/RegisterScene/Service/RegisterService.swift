@@ -11,14 +11,14 @@ import FirebaseFirestore
 
 final class RegisterService {
 
+    //MARK: - Inits
     let db = Firestore.firestore()
     let configEmail = ConfigEmail()
 
     //MARK: - Methods
-
     func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> ()) {
+        
         let group = DispatchGroup()
-
         var emailIsBusy = false
         var nicknameIsBusy = false
 

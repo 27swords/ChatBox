@@ -1,5 +1,5 @@
 //
-//  AuthModel.swift
+//  AuthService.swift
 //  ChatBox
 //
 //  Created by Alexander Chervoncev on 7/2/2023.
@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
-class AuthModel {
+class AuthService {
     
     lazy var configEmail = ConfigEmail()
     

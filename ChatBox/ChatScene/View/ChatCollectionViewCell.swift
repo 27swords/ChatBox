@@ -24,7 +24,7 @@ class ChatCollectionViewCell: MessageContentCell {
             MessageLabel().textColor = displayDelegate.textColor(for: message, at: indexPath, in: messagesCollectionView)
             messageContainerView.backgroundColor = .green // set the background color to green
         default:
-            fatalError("Unsupported message kind: \(message.kind)")
+        fatalError("Unsupported message kind: \(message.kind)")
         }
     }
     

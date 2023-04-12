@@ -25,15 +25,18 @@ private extension TabBarViewController {
     
     func makeTabItems() {
         let friends = FriendsViewController()
+        let chatList = ChatListViewController()
         let user = UserViewController()
         
         guard let friendsIcon = UIImage(systemName: "person.2") else { return }
+        guard let chatListIcon = UIImage(systemName: "message") else { return }
         guard let userIcon = UIImage(systemName: "person") else { return }
         
         let friendsScene = createNavController(for: friends, title: "Друзья", image: friendsIcon)
+        let chatListScene = createNavController(for: chatList, title: "Сообщения", image: chatListIcon)
         let userScene = createNavController(for: user, title: "Профиль", image: userIcon)
 
-        viewControllers = [friendsScene, userScene]
+        viewControllers = [friendsScene, chatListScene, userScene]
     }
     
     func createNavController(for rootViewController: UIViewController,

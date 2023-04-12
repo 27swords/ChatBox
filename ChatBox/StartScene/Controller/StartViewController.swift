@@ -16,6 +16,7 @@ protocol StartViewControllerDelegate: AnyObject {
 
 final class StartViewController: UIViewController {
     
+    //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
     lazy var authVC = AuthViewController()
     lazy var registerVC = RegisterViewController()
@@ -38,6 +39,7 @@ final class StartViewController: UIViewController {
     }
 }
 
+//MARK: - extension StartViewControllerDelegate
 extension StartViewController: StartViewControllerDelegate {
     
     func fadeAnimation() {

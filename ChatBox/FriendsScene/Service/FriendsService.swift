@@ -19,7 +19,7 @@ final class FriendsService {
             .whereField("email", isNotEqualTo: email)
 
         query.getDocuments { snapshot, error in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 guard let snapshot = snapshot else { return }
                 let chatListModel = snapshot.documents.compactMap { document -> FriendsModel? in
                     guard let nickname = document.data()["nickname"] as? String else { return nil }

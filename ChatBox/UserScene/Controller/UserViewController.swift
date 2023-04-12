@@ -29,7 +29,7 @@ final class UserViewController: UIViewController {
     }
 
     @IBAction func editPhotoAction(_ sender: Any) {
-        editPhoto()
+        presentPhotoActionSheet()
     }
     
     //MARK: - LifeCycle
@@ -49,21 +49,66 @@ final class UserViewController: UIViewController {
 //MARK: - Extension UIImagePicker
 extension UserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    func presentPhotoActionSheet() {
+        let actionSheet = UIAlertController(title: nil,
+                                            message: nil,
+                                            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Закрыть",
+                                            style: .cancel,
+                                            handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Сделать фото",
+                                            style: .default,
+                                            handler: { [weak self] _ in
+            self?.presentCamera()
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Выбрать из галереи",
+                                            style: .default,
+                                            handler: { [weak self] _ in
+            self?.presentPhotoPicker()
+        }))
+        
+        present(actionSheet, animated: true)
+    }
+    
+    func presentCamera() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .camera
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true)
+    }
+    
+    func presentPhotoPicker() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true)
+    }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
 
-        guard let image = info[.originalImage] as? UIImage else {
+        guard let image = info[.editedImage] as? UIImage else {
             print("Error: Selected image could not be converted to UIImage.")
             return
         }
         
         // загрузка аватара и отправвление его в коллекцию user
-        service.uploadAvatar(image: image) { result in
+        service.uploadAvatar(image: image) { [weak self] result in
             switch result {
                 
             case .success(let url):
-                self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                self.service.updateUserProfile(avatarURL: url)
+                guard let self = self else { return }
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                    self.service.updateUserProfile(avatarURL: url)
+                }
             case .failure(let error):
                 print("Error uploading avatar: \(error.localizedDescription)")
             }
@@ -77,14 +122,6 @@ extension UserViewController: UIImagePickerControllerDelegate, UINavigationContr
 
 //MARK: - Private Extension
 private extension UserViewController {
-    
-    private func editPhoto() {
-        let imagePickerController = UIImagePickerController()
-        
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
-    }
     
     // получение всех данных о пользователе
     private func userInfoGet() {

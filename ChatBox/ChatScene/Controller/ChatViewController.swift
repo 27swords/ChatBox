@@ -24,7 +24,6 @@ final class ChatViewController: MessagesViewController {
         super.viewDidLoad()
         setupMessageCollectionView()
         setupSendButton()
-        searchChat()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -38,31 +37,7 @@ final class ChatViewController: MessagesViewController {
     }
     
     //MARK: - Methods
-    
-    func searchChat() {
-        guard chatID == nil else { return }
-        chatService.getConversationsId(otherId: otherID ?? "") { [weak self] result in
-            switch result {
-            case .success(let chatId):
-                self?.chatID = chatId
-                self?.getMessages(chatId: chatId)
-            case .failure(let error):
-                print("Error fetching conversation ID: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func getMessages(chatId: String) {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            self.chatService.getAllMessages(chatId: chatId) { messages in
-                DispatchQueue.main.async {
-                    self.messages = messages
-                    self.messagesCollectionView.reloadDataAndKeepOffset()
-                }
-            }
-        }
-    }
+
 }
 
 //MARK: - Messages Exntension
@@ -97,14 +72,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         let message = Message(sender: selfSender, messageId: "", sentDate: Date(), kind: .text(text))
         
-        messages.append(message)
-        chatService.sendMessage(otherId: self.otherID, conversationId: self.chatID, text: text) { [weak self] convoId in
-            DispatchQueue.main.async {
-                inputBar.inputTextView.text = nil
-                self?.messagesCollectionView.reloadDataAndKeepOffset()
-            }
-            self?.chatID = convoId
-        }
+        
     }
 }
 

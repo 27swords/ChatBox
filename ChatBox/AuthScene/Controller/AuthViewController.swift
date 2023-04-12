@@ -16,7 +16,7 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
-    lazy var authService = AuthModel()
+    lazy var authService = AuthService()
     lazy var checkFields = CheckFields()
     var userDefault = UserDefaults.standard
 
@@ -27,6 +27,11 @@ final class AuthViewController: UIViewController {
     
     @IBAction func logInChat(_ sender: Any) {
         loginChat() 
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        emailTextField.autocorrectionType = .no
     }
         
     //MARK: - Methods
@@ -45,46 +50,47 @@ private extension AuthViewController {
         if email.isEmpty && password.isEmpty  {
             print("Email or passwords is Empty")
             loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
+            loginErrorLabel.twitching()
             return
         }
 
         if !checkFields.isValidEmail(email)  {
             print("Error Email")
             loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
+            loginErrorLabel.twitching()
             return
         }
 
         if !checkFields.isPasswordValid(password) {
             print("Error Password")
             loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
+            loginErrorLabel.twitching()
             return
         }
         
         if checkFields.isValidEmail(email) {
             authService.authInApp(loginField) { [weak self] response in
+                guard let self = self else { return }
+                
                 switch response {
                     
                 case .success:
                     print("success")
-                    self?.userDefault.set(true, forKey: "isLogin")
-                    self?.delegate?.openChat()
+                    self.userDefault.set(true, forKey: "isLogin")
+                    self.delegate?.openChat()
                     
                 case .errorAccountNotVerified:
                     print("errorAccountNotVerified")
-                    self?.showAlert()
+                    self.showAlert()
                     
                 case .errorLogin:
                     print("errorLogin")
-                    self?.loginErrorLabel.isHidden = false
-                    self?.loginErrorLabel.twitching(duration: 0.5)
+                    self.loginErrorLabel.isHidden = false
+                    self.loginErrorLabel.twitching()
                                         
                 case .error:
                     print("error")
-                    self?.loginErrorLabel.isHidden = false
-                    self?.loginErrorLabel.twitching(duration: 0.5)
+                    self.showErrorAlert()
                 }
             }
         }
@@ -93,6 +99,15 @@ private extension AuthViewController {
     private func showAlert() {
         let title = "Активация"
         let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertButton = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(alertButton)
+        present(alert, animated: true)
+    }
+    
+    private func showErrorAlert() {
+        let title = "Ошибка"
+        let message = "Проверьте ваше подключение к сети"
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let alertButton = UIAlertAction(title: "OK", style: .cancel)
         alert.addAction(alertButton)

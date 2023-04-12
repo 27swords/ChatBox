@@ -96,7 +96,6 @@ private extension FriendsViewController {
             DispatchQueue.global(qos: .userInitiated).async {
                 self?.friend = friends
                 
-                
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }

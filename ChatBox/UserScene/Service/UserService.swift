@@ -13,7 +13,6 @@ import FirebaseStorage
 final class UserService {
     
     let dataBase = Firestore.firestore()
-//    let storageRef = Storage.storage().reference()
     
     func userInfo(completion: @escaping ([UserModel]) -> ()) {
         guard let email = Auth.auth().currentUser?.email else { return }
@@ -58,7 +57,7 @@ final class UserService {
             }
         }
     }
-    
+        
     //отправление url фоторафии в коллекцию user
     func updateUserProfile(avatarURL: URL) {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }

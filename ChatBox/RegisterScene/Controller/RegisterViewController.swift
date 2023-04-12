@@ -32,8 +32,15 @@ final class RegisterViewController: UIViewController {
         createUser()
     }
     
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        nicknameTextField.autocorrectionType = .no
+        emailTextField.autocorrectionType = .no
+    }
+    
     //MARK: - Methods
-    //Скрытие клавиатуры при нажатии
+    //Скрытие клавиатуры при нажатии на пустое пространство
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
@@ -55,51 +62,52 @@ private extension RegisterViewController {
         
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"
-            errorEmail.twitching(duration: 0.5)
+            errorEmail.twitching()
             return
         }
         
         if !checkFields.isValidEmail(email) {
             print("E-mail Invalid")
             errorEmail.text = "Неверный E-mail"
-            errorEmail.twitching(duration: 0.5)
+            errorEmail.twitching()
             return
         }
         
         if password != repPassword {
             print("passwords don't match")
             errorPassword.text = "Пароли не совпадают"
-            errorPassword.twitching(duration: 0.5)
+            errorPassword.twitching()
             return
         }
 
         if !checkFields.isPasswordValid(password) {
             print("the password is too simple")
             errorPassword.text = "Пароль слишком простой"
-            errorPassword.twitching(duration: 0.5)
+            errorPassword.twitching()
             return
         }
         
         serviceUser.createNewUser(data) { [weak self] response in
+            guard let self = self else { return }
+            
             switch response {
             case .success:
                 print("Success")
-                self?.showAlert()
-                self?.delegate?.openAuthVC()
+                self.showAlert()
+                self.delegate?.openAuthVC()
 
             case .emailAlreadyInUse:
                 print("already In Use")
-                self?.errorEmail.text = "E-mail уже используется"
-                self?.errorEmail.twitching(duration: 0.5)
+                self.errorEmail.text = "E-mail уже используется"
+                self.errorEmail.twitching()
 
             case .error:
                 print("Error")
-                self?.errorEmail.text = "Ошибка регистрации"
-                self?.errorEmail.twitching(duration: 0.5)
+                self.showErrorAlert()
 
             case .nicknameAlreadyInUse:
-                self?.errorNicknameLabel.text = "Имя пользователя занято"
-                self?.errorNicknameLabel.twitching(duration: 0.5)
+                self.errorNicknameLabel.text = "Имя пользователя занято"
+                self.errorNicknameLabel.twitching()
            
             case .unknownError:
                 print("unknownError")
@@ -110,6 +118,15 @@ private extension RegisterViewController {
     private func showAlert() {
         let title = "Активация"
         let message = "На ваш электронный адрес было отправлено письмо с активацией!"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertButton = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(alertButton)
+        present(alert, animated: true)
+    }
+    
+    private func showErrorAlert() {
+        let title = "Ошибка"
+        let message = "Проверьте ваше подключение к сети"
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let alertButton = UIAlertAction(title: "OK", style: .cancel)
         alert.addAction(alertButton)
