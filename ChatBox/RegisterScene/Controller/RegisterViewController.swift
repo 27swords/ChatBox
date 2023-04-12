@@ -26,10 +26,17 @@ final class RegisterViewController: UIViewController {
     //MARK: - Actions
     @IBAction func closeRegisterAction(_ sender: Any) {
         delegate?.closeVC()
+        
+        emailTextField.text = nil
+        nicknameTextField.text = nil
+        passTextField.text = nil
+        repPassTextField.text = nil
     }
   
     @IBAction func regButtonAction(_ sender: Any) {
-        createUser()
+        Task { @MainActor in
+            await createUser()
+        }
     }
     
     //MARK: - Life Cycle
@@ -49,7 +56,7 @@ final class RegisterViewController: UIViewController {
 private extension RegisterViewController {
     
     // Регистрация пользователя и проверка входных данных
-    private func createUser() {
+    private func createUser() async {
         guard let email = emailTextField.text else { return }
         guard let nickName = nicknameTextField.text else { return }
         guard let password = passTextField.text else { return }
@@ -87,28 +94,32 @@ private extension RegisterViewController {
             return
         }
         
-        serviceUser.createNewUser(data) { [weak self] response in
+        await serviceUser.createNewUser(data) { [weak self] response in
             guard let self = self else { return }
             
             switch response {
             case .success:
                 print("Success")
-                self.showAlert()
-                self.delegate?.openAuthVC()
-
+                DispatchQueue.main.async {
+                    self.showAlert()
+                    self.delegate?.openAuthVC()
+                }
             case .emailAlreadyInUse:
                 print("already In Use")
-                self.errorEmail.text = "E-mail уже используется"
-                self.errorEmail.twitching()
-
+                DispatchQueue.main.async {
+                    self.errorEmail.text = "E-mail уже используется"
+                    self.errorEmail.twitching()
+                }
             case .error:
                 print("Error")
-                self.showErrorAlert()
-
+                DispatchQueue.main.async {
+                    self.showErrorAlert()
+                }
             case .nicknameAlreadyInUse:
-                self.errorNicknameLabel.text = "Имя пользователя занято"
-                self.errorNicknameLabel.twitching()
-           
+                DispatchQueue.main.async {
+                    self.errorNicknameLabel.text = "Имя пользователя занято"
+                    self.errorNicknameLabel.twitching()
+                }
             case .unknownError:
                 print("unknownError")
             }
@@ -116,20 +127,24 @@ private extension RegisterViewController {
     }
     
     private func showAlert() {
-        let title = "Активация"
-        let message = "На ваш электронный адрес было отправлено письмо с активацией!"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let alertButton = UIAlertAction(title: "OK", style: .cancel)
-        alert.addAction(alertButton)
-        present(alert, animated: true)
+        Task { @MainActor in
+            let title = "Активация"
+            let message = "На ваш электронный адрес было отправлено письмо с активацией!"
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alertButton = UIAlertAction(title: "OK", style: .cancel)
+            alert.addAction(alertButton)
+            present(alert, animated: true)
+        }
     }
     
     private func showErrorAlert() {
-        let title = "Ошибка"
-        let message = "Проверьте ваше подключение к сети"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let alertButton = UIAlertAction(title: "OK", style: .cancel)
-        alert.addAction(alertButton)
-        present(alert, animated: true)
+        Task { @MainActor in
+            let title = "Ошибка"
+            let message = "Проверьте ваше подключение к сети"
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alertButton = UIAlertAction(title: "OK", style: .cancel)
+            alert.addAction(alertButton)
+            present(alert, animated: true)
+        }
     }
 }

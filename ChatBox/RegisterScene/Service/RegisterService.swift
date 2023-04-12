@@ -10,75 +10,61 @@ import Firebase
 import FirebaseFirestore
 
 final class RegisterService {
-
-    //MARK: - Inits
-    let db = Firestore.firestore()
+    
+    let database = Firestore.firestore()
     let configEmail = ConfigEmail()
-
-    //MARK: - Methods
-    func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> ()) {
-        
-        let group = DispatchGroup()
-        var emailIsBusy = false
-        var nicknameIsBusy = false
-
-        // Проверка почты
-        group.enter()
-        Auth.auth().fetchSignInMethods(forEmail: data.email) { signInMethods, error in
-            if let error = error {
-                print("error emailIsBusy: \(error)")
-            } else if signInMethods == nil {
-                // почта не используется
-            } else {
-                emailIsBusy = true
-            }
-            group.leave()
-        }
-
-        // Проверка nickname
-        group.enter()
-        db.collection("users")
-            .whereField("nickname", isEqualTo: data.nickname)
-            .getDocuments() { snapshot, error in
-                if let error = error {
-                    print("error nicknameIsBusy: \(error)")
-                    nicknameIsBusy = true
-                } else {
-                    nicknameIsBusy = snapshot?.documents.count ?? 0 > 0
-                }
-                group.leave()
-        }
-        
-        group.notify(queue: DispatchQueue.main) {
-            if emailIsBusy {
+    
+    func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> Void) async {
+        do {
+            let emailBusy = try await isEmailBusy(data.email)
+            if emailBusy {
                 completion(.emailAlreadyInUse)
-            } else if nicknameIsBusy {
-                completion(.nicknameAlreadyInUse)
-            } else {
-                // Создать нового пользователя
-                Auth.auth().createUser(withEmail: data.email, password: data.password) { result, error in
-                    if error != nil {
-                        completion(.error)
-                    } else if let result = result {
-                        let userUid = result.user.uid
-                        let email = data.email
-                        let nickname = data.nickname
-                        let avatarURL = data.avatarURL
-                        let data: [String: Any] = ["email": email, "nickname": nickname, "avatarURL": avatarURL ?? ""]
-                        self.db.collection("users").document(userUid).setData(data) { error in
-                            if error != nil {
-                                completion(.error)
-                            } else {
-                                self.configEmail.configEmail()
-                                completion(.success)
-                            }
-                        }
-                    } else {
-                        completion(.unknownError)
-                    }
-                }
+                return
             }
+            
+            let nicknameBusy = await isNicknameBusu(data.nickname)
+            if nicknameBusy  {
+                completion(.nicknameAlreadyInUse)
+                return
+            }
+            
+            let authResult = try await createUser(data.email, data.password, data.nickname, data.avatarURL)
+            try await sendEmailVerifiCation(authResult)
+            
+            completion(.success)
+        } catch {
+            completion(.error)
         }
     }
+    
+    private func isEmailBusy(_ email: String) async throws -> Bool {
+        let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+        return !signInMethods.isEmpty
+    }
+    
+    private func isNicknameBusu(_ nickname: String) async -> Bool {
+        let querySnapshot = try? await database.collection("users")
+            .whereField("nickname", isEqualTo: nickname)
+            .getDocuments()
+        return querySnapshot?.documents.count ?? 0 > 0
+    }
+    
+    private func createUser(_ email: String, _ password: String, _ nickname: String, _ avatarURL: String?) async throws -> AuthDataResult {
+        let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
+        let changeRequest = authResult.user.createProfileChangeRequest()
+        changeRequest.displayName = nickname
+        
+        if let avatarURL = avatarURL {
+            changeRequest.photoURL = URL(string: avatarURL)
+        }
+        try await changeRequest.commitChanges()
+        let data: [String: Any] = ["email": email, "nickname": nickname, "avatarURL": avatarURL ?? ""]
+        try await database.collection("users").document(authResult.user.uid).setData(data)
+        return authResult
+    }
+    
+    private func sendEmailVerifiCation(_ authResult: AuthDataResult) async throws {
+        try await authResult.user.sendEmailVerification()
+        configEmail.configEmail()
+    }
 }
-

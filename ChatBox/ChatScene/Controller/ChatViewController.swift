@@ -70,8 +70,7 @@ extension ChatViewController: MessagesDisplayDelegate, MessagesLayoutDelegate, M
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        let message = Message(sender: selfSender, messageId: "", sentDate: Date(), kind: .text(text))
-        
+//        let message = Message(sender: selfSender, messageId: "", sentDate: Date(), kind: .text(text))
         
     }
 }

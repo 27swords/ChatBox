@@ -23,6 +23,9 @@ final class AuthViewController: UIViewController {
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {
         delegate?.closeVC()
+        
+        emailTextField.text = nil
+        passwordTextField.text = nil
     }
     
     @IBAction func logInChat(_ sender: Any) {
