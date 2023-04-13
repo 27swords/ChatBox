@@ -10,63 +10,72 @@ import Firebase
 import FirebaseFirestore
 import FirebaseStorage
 
+enum UserServiceError: Error {
+    case userNotLoggedIn
+    case failedToRetrieveData
+}
+
 final class UserService {
     
     let dataBase = Firestore.firestore()
     
-    func userInfo(completion: @escaping ([UserModel]) -> ()) {
-        guard let email = Auth.auth().currentUser?.email else { return }
+    func userInfo() async throws -> [UserModel] {
+        guard let email = Auth.auth().currentUser?.email else { throw UserServiceError.userNotLoggedIn }
         
         let query = dataBase.collection("users")
             .whereField("email", isEqualTo: email)
         
-        query.getDocuments { snapshot, error in
-            DispatchQueue.main.async {
-                guard let snapshot = snapshot else { return }
-                let userInfo = snapshot.documents.compactMap { document -> UserModel? in
-                    guard let nickname = document.data()["nickname"] as? String else { return nil }
-                    return UserModel(id: document.documentID, nickname: nickname, email: email)
-                }
-                completion(userInfo)
+        do {
+            let snapshot = try await query.getDocuments()
+            let user = snapshot.documents.compactMap { document -> UserModel? in
+                guard let nickname = document.data()["nickname"] as? String else { return nil}
+                return UserModel(id: document.documentID, nickname: nickname, email: email)
             }
+            return user
+        } catch {
+            throw UserServiceError.failedToRetrieveData
         }
     }
     
-    // сохранение изображениия в storage
-    func uploadAvatar(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
+    /// сохранение изображениия в storage
+    func uploadAvatar(image: UIImage) async throws -> URL {
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            throw UserServiceError.userNotLoggedIn
+        }
         
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         let ref = Storage.storage().reference().child("avatars").child(currentUserId)
-        guard let imageData = image.jpegData(compressionQuality: 0.4) else { return }
-        let metadata = StorageMetadata()
+        guard let imagedata = image.jpegData(compressionQuality: 0.4) else {
+            throw UserServiceError.failedToRetrieveData
+        }
         
+        let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         
-        ref.putData(imageData, metadata: metadata) { metadata, error in
-            guard metadata != nil else {
-                completion(.failure(error!))
-                return
-            }
+        do {
+            ref.putData(imagedata, metadata: metadata)
             
-            ref.downloadURL { url, error in
-                guard let url = url else {
-                    completion(.failure(error!))
-                    return
-                }
-                completion(.success(url))
-            }
+            let url = try await ref.downloadURL()
+            let userRef = dataBase.collection("users").document(currentUserId)
+            try await userRef.updateData(["avatarURL": url.absoluteString])
+            
+            return url
+        } catch {
+            throw error
         }
     }
-        
-    //отправление url фоторафии в коллекцию user
-    func updateUserProfile(avatarURL: URL) {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+    
+    ///отправление url фоторафии в коллекцию user
+    func updateUserProfile(avatarURL: URL) async throws {
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            throw UserServiceError.userNotLoggedIn
+        }
         
         let userRef = Firestore.firestore().collection("users").document(currentUserId)
-        userRef.updateData(["avatarURL": avatarURL.absoluteString]) { error in
-            if let error = error {
-                print("Error updating user profile: \(error.localizedDescription)")
-            }
+        
+        do {
+            try await userRef.updateData(["avatarURL": avatarURL.absoluteString])
+        } catch {
+            throw error
         }
     }
 }

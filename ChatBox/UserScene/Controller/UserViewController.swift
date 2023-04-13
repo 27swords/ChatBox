@@ -7,8 +7,8 @@
 
 import UIKit
 import Firebase
-import SDWebImage
 import FirebaseStorage
+import PhotosUI
 
 final class UserViewController: UIViewController {
     
@@ -35,7 +35,9 @@ final class UserViewController: UIViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        userInfoGet()
+        Task { @MainActor in
+            try await userInfoGet()
+        }
     }
     
     override func viewWillLayoutSubviews() {
@@ -47,76 +49,68 @@ final class UserViewController: UIViewController {
 }
 
 //MARK: - Extension UIImagePicker
-extension UserViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension UserViewController: PHPickerViewControllerDelegate {
     
     func presentPhotoActionSheet() {
         let actionSheet = UIAlertController(title: nil,
                                             message: nil,
                                             preferredStyle: .actionSheet)
-        
+
         actionSheet.addAction(UIAlertAction(title: "Закрыть",
                                             style: .cancel,
                                             handler: nil))
-        
+
         actionSheet.addAction(UIAlertAction(title: "Сделать фото",
                                             style: .default,
                                             handler: { [weak self] _ in
             self?.presentCamera()
         }))
-        
+
         actionSheet.addAction(UIAlertAction(title: "Выбрать из галереи",
                                             style: .default,
                                             handler: { [weak self] _ in
             self?.presentPhotoPicker()
         }))
-        
+
         present(actionSheet, animated: true)
     }
-    
-    func presentCamera() {
-        let imagePickerController = UIImagePickerController()
-        
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .camera
-        imagePickerController.allowsEditing = true
-        present(imagePickerController, animated: true)
-    }
-    
-    func presentPhotoPicker() {
-        let imagePickerController = UIImagePickerController()
-        
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        imagePickerController.allowsEditing = true
-        present(imagePickerController, animated: true)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true, completion: nil)
 
-        guard let image = info[.editedImage] as? UIImage else {
-            print("Error: Selected image could not be converted to UIImage.")
-            return
-        }
+    func presentCamera() {
         
-        // загрузка аватара и отправвление его в коллекцию user
-        service.uploadAvatar(image: image) { [weak self] result in
-            switch result {
-                
-            case .success(let url):
-                guard let self = self else { return }
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                    self.service.updateUserProfile(avatarURL: url)
+    }
+
+    func presentPhotoPicker() {
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+        configuration.selectionLimit = 1
+        configuration.filter = .images
+        let vc = PHPickerViewController(configuration: configuration)
+        vc.delegate = self
+        present(vc, animated: true)
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        results.forEach { result in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
+                guard let image = reading as? UIImage, error == nil else {
+                    return
                 }
-            case .failure(let error):
-                print("Error uploading avatar: \(error.localizedDescription)")
+                
+                Task { @MainActor in
+                    do {
+                        let url = try await self.service.uploadAvatar(image: image)
+                        try await self.service.updateUserProfile(avatarURL: url)
+                        
+                        DispatchQueue.main.async {
+                            self.avatarImageView.image = image
+                        }
+                    } catch {
+                        print("error \(error)")
+                    }
+                }
             }
         }
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -124,26 +118,26 @@ extension UserViewController: UIImagePickerControllerDelegate, UINavigationContr
 private extension UserViewController {
     
     // получение всех данных о пользователе
-    private func userInfoGet() {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+    private func userInfoGet() async throws {
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            throw UserServiceError.userNotLoggedIn
+        }
+        
         let ref = Storage.storage().reference().child("avatars").child(currentUserId)
         
-        service.userInfo { [weak self] user in
-            DispatchQueue.global(qos: .userInitiated).async {
-                guard let self = self, let userInfo = user.first else { return }
-                
-                ref.downloadURL { (url, error) in
-                    if let error = error {
-                        print("Error getting avatar URL: \(error.localizedDescription)")
-                    } else if let url = url {
-                        self.avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-                    }
-                }
-                DispatchQueue.main.async {
-                    self.nicknameLabel.text = userInfo.nickname
-                    self.emailLabel.text = userInfo.email
-                }
+        do {
+            let user = try await service.userInfo()
+            guard let userInfo = user.first else { return }
+            
+            let url = try await ref.downloadURL()
+            avatarImageView.sd_setImage(with: url)
+            
+            DispatchQueue.main.async {
+                self.nicknameLabel.text = userInfo.nickname
+                self.emailLabel.text = userInfo.email
             }
+        } catch {
+            throw error
         }
     }
 
@@ -168,3 +162,5 @@ private extension UserViewController {
         }
     }
 }
+
+
