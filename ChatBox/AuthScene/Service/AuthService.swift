@@ -9,31 +9,25 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
-class AuthService {
+final class AuthService {
     
     lazy var configEmail = ConfigEmail()
     
-    func authInApp(_ data: DTO, completion: @escaping (AuthResponse) -> ()) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            Auth.auth().signIn(withEmail: data.email, password: data.password) { result, error in
-                DispatchQueue.main.async {
-                    guard error == nil else {
-                        completion(.error)
-                        return
-                    }
-
-                    guard let user = result?.user else {
-                        completion(.errorLogin)
-                        return
-                    }
-
-                    if user.isEmailVerified {
-                        completion(.success)
-                    } else {
-                        self.configEmail.configEmail()
-                        completion(.errorAccountNotVerified)
-                    }
-                }
+    func authInApp(_ data: DTO) async throws -> AuthResponse {
+        do {
+            let result = try await Auth.auth().signIn(withEmail: data.email, password: data.password)
+            let user = result.user
+            if user.isEmailVerified {
+                return .success
+            } else {
+                self.configEmail.configEmail()
+                return .errorAccountNotVerified
+            }
+        } catch let error as NSError {
+            if error.code == AuthErrorCode.userNotFound.rawValue || error.code == AuthErrorCode.wrongPassword.rawValue {
+                return .errorLogin
+            } else {
+                throw error
             }
         }
     }

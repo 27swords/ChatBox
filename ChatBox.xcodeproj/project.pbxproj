@@ -382,7 +382,6 @@
 			isa = PBXGroup;
 			children = (
 				49CE63AB29914E8F008D188A /* RegisterService.swift */,
-				49AF61A7299AA59600CA1DDF /* ConfigEmail.swift */,
 				49CE63AF29915103008D188A /* RegisterResponse.swift */,
 			);
 			path = Service;
@@ -435,6 +434,7 @@
 			children = (
 				49CE63A9299135AB008D188A /* CheckFields.swift */,
 				49E1C89129B0A2F2001FF391 /* CustomRefreshControl.swift */,
+				49AF61A7299AA59600CA1DDF /* ConfigEmail.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";

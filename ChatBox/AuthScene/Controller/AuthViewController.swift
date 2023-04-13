@@ -26,10 +26,13 @@ final class AuthViewController: UIViewController {
         
         emailTextField.text = nil
         passwordTextField.text = nil
+        loginErrorLabel.isHidden = true
     }
     
     @IBAction func logInChat(_ sender: Any) {
-        loginChat() 
+        Task { @MainActor in
+            await loginChat()
+        }
     }
     
     override func viewDidLoad() {
@@ -45,7 +48,7 @@ final class AuthViewController: UIViewController {
 }
 
 private extension AuthViewController {
-    private func loginChat() {
+    private func loginChat() async {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
         let loginField = DTO(email: email, password: password, nickname: email)
@@ -56,14 +59,14 @@ private extension AuthViewController {
             loginErrorLabel.twitching()
             return
         }
-
+        
         if !checkFields.isValidEmail(email)  {
             print("Error Email")
             loginErrorLabel.isHidden = false
             loginErrorLabel.twitching()
             return
         }
-
+        
         if !checkFields.isPasswordValid(password) {
             print("Error Password")
             loginErrorLabel.isHidden = false
@@ -72,48 +75,36 @@ private extension AuthViewController {
         }
         
         if checkFields.isValidEmail(email) {
-            authService.authInApp(loginField) { [weak self] response in
-                guard let self = self else { return }
-                
+            do {
+                let response = try await authService.authInApp(loginField)
                 switch response {
                     
                 case .success:
-                    print("success")
                     self.userDefault.set(true, forKey: "isLogin")
                     self.delegate?.openChat()
-                    
                 case .errorAccountNotVerified:
-                    print("errorAccountNotVerified")
                     self.showAlert()
-                    
                 case .errorLogin:
-                    print("errorLogin")
                     self.loginErrorLabel.isHidden = false
                     self.loginErrorLabel.twitching()
-                                        
                 case .error:
-                    print("error")
-                    self.showErrorAlert()
+                    self.loginErrorLabel.isHidden = false
+                    self.loginErrorLabel.twitching()
                 }
+            } catch {
+                print("Error:", error.localizedDescription)
             }
         }
     }
-
-    private func showAlert() {
-        let title = "Активация"
-        let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let alertButton = UIAlertAction(title: "OK", style: .cancel)
-        alert.addAction(alertButton)
-        present(alert, animated: true)
-    }
     
-    private func showErrorAlert() {
-        let title = "Ошибка"
-        let message = "Проверьте ваше подключение к сети"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let alertButton = UIAlertAction(title: "OK", style: .cancel)
-        alert.addAction(alertButton)
-        present(alert, animated: true)
+    private func showAlert() {
+        Task { @MainActor in
+            let title = "Активация"
+            let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alertButton = UIAlertAction(title: "OK", style: .cancel)
+            alert.addAction(alertButton)
+            present(alert, animated: true)
+        }
     }
 }

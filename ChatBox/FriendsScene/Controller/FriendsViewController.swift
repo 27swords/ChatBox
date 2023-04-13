@@ -30,18 +30,18 @@ final class FriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        getFriend()
+        
+        Task { @MainActor in
+            await getFriend()
+        }
     }
     
     //MARK: - Objc Methods
     @objc func refresh(sender: CustomRefreshControl) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.getFriend()
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                sender.endRefreshing()
-            }
+        Task { @MainActor in
+            await self.getFriend()
+            self.tableView.reloadData()
+            sender.endRefreshing()
         }
     }
 }
@@ -91,15 +91,13 @@ private extension FriendsViewController {
                            forCellReuseIdentifier: String(describing: FriendsTableViewCell.self))
     }
     
-    private func getFriend() {
-        service.getUsersList { [weak self] friends in
-            DispatchQueue.global(qos: .userInitiated).async {
-                self?.friend = friends
-                
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            }
+    private func getFriend() async {
+        do {
+            let friends = try await service.getUsersList()
+            self.friend = friends
+            tableView.reloadData()
+        } catch {
+            print("error", error.localizedDescription)
         }
     }
 }

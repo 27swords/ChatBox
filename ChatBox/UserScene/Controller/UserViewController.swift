@@ -19,8 +19,8 @@ final class UserViewController: UIViewController {
     @IBOutlet weak var editPhotoButton: UIButton!
         
     //MARK: - Inits
-    private let service = UserService()
-    private var user = [UserModel]()
+    lazy var service = UserService()
+    lazy var user = [UserModel]()
     var userDefault = UserDefaults.standard
     
     //MARK: - IBAction

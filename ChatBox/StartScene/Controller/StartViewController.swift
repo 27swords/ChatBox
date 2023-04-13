@@ -46,7 +46,7 @@ extension StartViewController: StartViewControllerDelegate {
         let transition = CATransition()
         transition.duration = 0.2
         transition.type = .fade
-        view.window?.layer.add(transition, forKey: kCATransition)
+        self.view.window?.layer.add(transition, forKey: kCATransition)
     }
     
     func openRegisterVC() {

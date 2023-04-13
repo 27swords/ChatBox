@@ -26,13 +26,9 @@ final class RegisterViewController: UIViewController {
     //MARK: - Actions
     @IBAction func closeRegisterAction(_ sender: Any) {
         delegate?.closeVC()
-        
-        emailTextField.text = nil
-        nicknameTextField.text = nil
-        passTextField.text = nil
-        repPassTextField.text = nil
+        hiddingOutlets()
     }
-  
+    
     @IBAction func regButtonAction(_ sender: Any) {
         Task { @MainActor in
             await createUser()
@@ -53,6 +49,7 @@ final class RegisterViewController: UIViewController {
     }
 }
 
+//MARK: - Private Extension
 private extension RegisterViewController {
     
     // Регистрация пользователя и проверка входных данных
@@ -63,10 +60,7 @@ private extension RegisterViewController {
         guard let repPassword = repPassTextField.text else { return }
         
         let data = DTO(email: email, password: password, nickname: nickName)
-                
-        errorEmail.text = nil
-        errorPassword.text = nil
-        
+                        
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"
             errorEmail.twitching()
@@ -103,6 +97,7 @@ private extension RegisterViewController {
                 DispatchQueue.main.async {
                     self.showAlert()
                     self.delegate?.openAuthVC()
+                    self.hiddingOutlets()
                 }
             case .emailAlreadyInUse:
                 print("already In Use")
@@ -124,6 +119,17 @@ private extension RegisterViewController {
                 print("unknownError")
             }
         }
+    }
+    
+    private func hiddingOutlets() {
+        emailTextField.text = nil
+        nicknameTextField.text = nil
+        passTextField.text = nil
+        repPassTextField.text = nil
+        
+        errorNicknameLabel.text = ""
+        errorEmail.text = ""
+        errorPassword.text = ""
     }
     
     private func showAlert() {
