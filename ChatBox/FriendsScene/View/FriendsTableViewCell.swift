@@ -26,9 +26,7 @@ final class FriendsTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.layoutIfNeeded()
         avatarImage.makeRounded()
-        self.contentView.layoutIfNeeded()
     }
     
     //MARK: - Methods

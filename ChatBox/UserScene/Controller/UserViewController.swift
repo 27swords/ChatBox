@@ -19,8 +19,8 @@ final class UserViewController: UIViewController {
     @IBOutlet weak var editPhotoButton: UIButton!
         
     //MARK: - Inits
-    lazy var service = UserService()
-    lazy var user = [UserModel]()
+    lazy var database = DatabaseManager()
+    lazy var user = [DTO]()
     var userDefault = UserDefaults.standard
     
     //MARK: - IBAction
@@ -42,9 +42,8 @@ final class UserViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        view.layoutIfNeeded()
         avatarImageView.makeRounded()
-        self.view.layoutIfNeeded()
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 
@@ -99,12 +98,12 @@ extension UserViewController: PHPickerViewControllerDelegate {
                 
                 Task { @MainActor in
                     do {
-                        let url = try await self.service.uploadAvatar(image: image)
-                        try await self.service.updateUserProfile(avatarURL: url)
-                        
+                        let url = try await self.database.uploadAvatar(image: image)
+                        try await self.database.updateUserProfile(avatarURL: url)
                         DispatchQueue.main.async {
                             self.avatarImageView.image = image
                         }
+                        
                     } catch {
                         print("error \(error)")
                     }
@@ -117,7 +116,6 @@ extension UserViewController: PHPickerViewControllerDelegate {
 //MARK: - Private Extension
 private extension UserViewController {
     
-    // получение всех данных о пользователе
     private func userInfoGet() async throws {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
             throw UserServiceError.userNotLoggedIn
@@ -126,7 +124,7 @@ private extension UserViewController {
         let ref = Storage.storage().reference().child("avatars").child(currentUserId)
         
         do {
-            let user = try await service.userInfo()
+            let user = try await database.userInfo()
             guard let userInfo = user.first else { return }
             
             let url = try await ref.downloadURL()

@@ -12,11 +12,25 @@ final class ChatListViewController: UIViewController {
     //MARK: - Outlet
     @IBOutlet weak var tableView: UITableView!
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        return refreshControl
+    }()
 
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+    }
+    
+    //MARK: - Objc Methods
+    @objc func refresh(sender: UIRefreshControl) {
+        Task { @MainActor in
+            
+            self.tableView.reloadData()
+            sender.endRefreshing()
+        }
     }
 }
 
@@ -38,8 +52,10 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
 
 private extension ChatListViewController {
     private func setupTableView() {
+        navigationController?.navigationBar.prefersLargeTitles = true
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.addSubview(refreshControl)
         tableView.register(UINib(nibName: String(describing: ChatListTableViewCell.self), bundle: nil),
                            forCellReuseIdentifier: String(describing: ChatListTableViewCell.self))
     }

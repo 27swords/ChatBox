@@ -23,6 +23,12 @@ class ChatListTableViewCell: UITableViewCell {
 
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        avatarImageView.makeRounded()
+        
+    }
+    
 //    func configureChatListCell(items: Conversation) {
 //        nameLabel.text = items
 //    }

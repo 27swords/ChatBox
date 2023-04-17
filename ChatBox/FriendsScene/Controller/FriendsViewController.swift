@@ -16,15 +16,15 @@ final class FriendsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - Views
-    private lazy var refreshControl: CustomRefreshControl = {
-        let refreshControl = CustomRefreshControl()
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         return refreshControl
     }()
     
     //MARK: - Inits
-    lazy var service = FriendsService()
-    var friend = [FriendsModel]()
+    lazy var database = DatabaseManager()
+    var friend = [DTO]()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -37,7 +37,7 @@ final class FriendsViewController: UIViewController {
     }
     
     //MARK: - Objc Methods
-    @objc func refresh(sender: CustomRefreshControl) {
+    @objc func refresh(sender: UIRefreshControl) {
         Task { @MainActor in
             await self.getFriend()
             self.tableView.reloadData()
@@ -84,6 +84,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
 //MARK: - Private Extension
 private extension FriendsViewController {
     private func setupTableView() {
+        navigationController?.navigationBar.prefersLargeTitles = true
         tableView.dataSource = self
         tableView.delegate = self
         tableView.addSubview(refreshControl)
@@ -93,7 +94,7 @@ private extension FriendsViewController {
     
     private func getFriend() async {
         do {
-            let friends = try await service.getUsersList()
+            let friends = try await database.getUsersList()
             self.friend = friends
             tableView.reloadData()
         } catch {

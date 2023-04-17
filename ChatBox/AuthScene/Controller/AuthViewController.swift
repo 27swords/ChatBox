@@ -16,7 +16,7 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
-    lazy var authService = AuthService()
+    lazy var database = DatabaseManager()
     lazy var checkFields = CheckFields()
     var userDefault = UserDefaults.standard
 
@@ -51,7 +51,7 @@ private extension AuthViewController {
     private func loginChat() async {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
-        let loginField = DTO(email: email, password: password, nickname: email)
+        let loginField = DTO(id: "", email: email, password: password, nickname: email)
         
         if email.isEmpty && password.isEmpty  {
             print("Email or passwords is Empty")
@@ -76,7 +76,7 @@ private extension AuthViewController {
         
         if checkFields.isValidEmail(email) {
             do {
-                let response = try await authService.authInApp(loginField)
+                let response = try await database.authInApp(loginField)
                 switch response {
                     
                 case .success:

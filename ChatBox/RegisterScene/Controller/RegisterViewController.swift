@@ -21,7 +21,7 @@ final class RegisterViewController: UIViewController {
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
     lazy var checkFields = CheckFields()
-    lazy var serviceUser = RegisterService()
+    lazy var database = DatabaseManager()
         
     //MARK: - Actions
     @IBAction func closeRegisterAction(_ sender: Any) {
@@ -58,22 +58,22 @@ private extension RegisterViewController {
         guard let nickName = nicknameTextField.text else { return }
         guard let password = passTextField.text else { return }
         guard let repPassword = repPassTextField.text else { return }
-        
-        let data = DTO(email: email, password: password, nickname: nickName)
-                        
+
+        let data = DTO(id: "", email: email, password: password, nickname: nickName)
+
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"
             errorEmail.twitching()
             return
         }
-        
+
         if !checkFields.isValidEmail(email) {
             print("E-mail Invalid")
             errorEmail.text = "Неверный E-mail"
             errorEmail.twitching()
             return
         }
-        
+
         if password != repPassword {
             print("passwords don't match")
             errorPassword.text = "Пароли не совпадают"
@@ -87,10 +87,10 @@ private extension RegisterViewController {
             errorPassword.twitching()
             return
         }
-        
-        await serviceUser.createNewUser(data) { [weak self] response in
+
+        await database.createNewUser(data) { [weak self] response in
             guard let self = self else { return }
-            
+
             switch response {
             case .success:
                 print("Success")
