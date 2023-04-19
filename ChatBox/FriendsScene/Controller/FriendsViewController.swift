@@ -40,8 +40,10 @@ final class FriendsViewController: UIViewController {
     @objc func refresh(sender: UIRefreshControl) {
         Task { @MainActor in
             await self.getFriend()
-            self.tableView.reloadData()
-            sender.endRefreshing()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                sender.endRefreshing()
+            }
         }
     }
 }
@@ -96,7 +98,10 @@ private extension FriendsViewController {
         do {
             let friends = try await database.getUsersList()
             self.friend = friends
-            tableView.reloadData()
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         } catch {
             print("error", error.localizedDescription)
         }

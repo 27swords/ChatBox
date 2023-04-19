@@ -15,4 +15,5 @@ enum FriendsServiceError: Error {
 enum UserServiceError: Error {
     case userNotLoggedIn
     case failedToRetrieveData
+    case failedToUploadAvatar
 }

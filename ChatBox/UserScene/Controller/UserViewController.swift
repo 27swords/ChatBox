@@ -125,10 +125,16 @@ private extension UserViewController {
         
         do {
             let user = try await database.userInfo()
+            self.user = user
             guard let userInfo = user.first else { return }
             
-            let url = try await ref.downloadURL()
-            avatarImageView.sd_setImage(with: url)
+            do {
+                let url = try await ref.downloadURL()
+                avatarImageView.sd_setImage(with: url)
+            } catch {
+                print("Failed to download user's profile picture:", error)
+                avatarImageView.image = UIImage(named: "default_profile_picture")
+            }
             
             DispatchQueue.main.async {
                 self.nicknameLabel.text = userInfo.nickname
@@ -138,6 +144,7 @@ private extension UserViewController {
             throw error
         }
     }
+
 
     // выход из аккаунта
     private func logOutAcount() {

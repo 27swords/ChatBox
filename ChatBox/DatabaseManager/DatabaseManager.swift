@@ -13,6 +13,7 @@ import FirebaseFirestore
 final class DatabaseManager {
     
     private let database = Firestore.firestore()
+    private let auth = Auth.auth()
     
     //MARK: - Registration methods
     public func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> Void) async {
@@ -39,7 +40,7 @@ final class DatabaseManager {
     }
     
     private func isEmailBusy(_ email: String) async throws -> Bool {
-        let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+        let signInMethods = try await auth.fetchSignInMethods(forEmail: email)
         return !signInMethods.isEmpty
     }
     
@@ -51,7 +52,7 @@ final class DatabaseManager {
     }
     
     private func createUser(_ email: String, _ password: String, _ nickname: String, _ avatarURL: String?) async throws -> AuthDataResult {
-        let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
+        let authResult = try await auth.createUser(withEmail: email, password: password)
         let changeRequest = authResult.user.createProfileChangeRequest()
         changeRequest.displayName = nickname
         
@@ -71,7 +72,7 @@ final class DatabaseManager {
     
     private func configEmail() {
         DispatchQueue.global(qos: .userInitiated).async {
-            Auth.auth().currentUser?.sendEmailVerification(completion: { error in
+            self.auth.currentUser?.sendEmailVerification(completion: { error in
                 DispatchQueue.main.async {
                     if let error = error {
                         print("error configEmail: \(error)")
@@ -85,7 +86,7 @@ final class DatabaseManager {
     //MARK: - Auth methods
     public func authInApp(_ data: DTO) async throws -> AuthResponse {
         do {
-            let result = try await Auth.auth().signIn(withEmail: data.email, password: data.password)
+            let result = try await auth.signIn(withEmail: data.email, password: data.password)
             let user = result.user
             if user.isEmailVerified {
                 return .success
@@ -104,18 +105,19 @@ final class DatabaseManager {
     
     //MARK: - FriendsGet methods
     public func getUsersList() async throws -> [DTO] {
-        let database = Firestore.firestore()
-        guard let email = Auth.auth().currentUser?.email else { throw FriendsServiceError.userNotLoggedIn }
+        guard let email = auth.currentUser?.email else { throw FriendsServiceError.userNotLoggedIn }
         
         let query = database.collection("users")
             .whereField("email", isNotEqualTo: email)
-        
+
         do {
             let snapshot = try await query.getDocuments()
             let friends = snapshot.documents.compactMap { document -> DTO? in
                 guard let nickname = document.data()["nickname"] as? String else { return nil }
                 guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
+                print("avatarURL", avatarURL)
                 return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarURL)
+                
             }
             return friends
         } catch {
@@ -125,7 +127,7 @@ final class DatabaseManager {
     
     //MARK: - UserGet methods
     public func userInfo() async throws -> [DTO] {
-        guard let email = Auth.auth().currentUser?.email else { throw UserServiceError.userNotLoggedIn }
+        guard let email = auth.currentUser?.email else { throw UserServiceError.userNotLoggedIn }
         
         let query = database.collection("users")
             .whereField("email", isEqualTo: email)
@@ -143,33 +145,30 @@ final class DatabaseManager {
         }
     }
     
-    //MARK: - update/upload photos 
-    /// сохранение изображениия в storage
+    // MARK: - update/upload photos
+    /// Save an image to Firebase Storage and return its download URL
     public func uploadAvatar(image: UIImage) async throws -> URL {
-        guard let currentUserId = Auth.auth().currentUser?.uid else {
+        guard let currentUserId = auth.currentUser?.uid else {
+            throw UserServiceError.userNotLoggedIn
+        }
+        
+        guard let imageData = image.jpegData(compressionQuality: 0.4) else {
             throw UserServiceError.userNotLoggedIn
         }
         
         let ref = Storage.storage().reference().child("avatars").child(currentUserId)
-        guard let imagedata = image.jpegData(compressionQuality: 0.4) else {
-            throw UserServiceError.failedToRetrieveData
-        }
-        
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         
         do {
-            ref.putData(imagedata, metadata: metadata)
-            
-            let url = try await ref.downloadURL()
-            return url
+            ref.putData(imageData, metadata: metadata)
+            return try await ref.downloadURL()
         } catch {
             throw error
         }
     }
 
-    
-    ///отправление url фоторафии в коллекцию user
+    /// Update the user's profile with the given avatar URL
     public func updateUserProfile(avatarURL: URL) async throws {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
             throw UserServiceError.userNotLoggedIn
@@ -178,7 +177,10 @@ final class DatabaseManager {
         let userRef = Firestore.firestore().collection("users").document(currentUserId)
         
         do {
-            try await userRef.updateData(["avatarURL": avatarURL.absoluteString])
+            // Use a batched write to update the user's profile
+            let batch = Firestore.firestore().batch()
+            batch.updateData(["avatarURL": avatarURL.absoluteString], forDocument: userRef)
+            try await batch.commit()
         } catch {
             throw error
         }
