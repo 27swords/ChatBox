@@ -21,7 +21,7 @@ final class RegisterViewController: UIViewController {
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
     lazy var checkFields = CheckFields()
-    lazy var database = DatabaseManager()
+    lazy var service = RegisterService()
         
     //MARK: - Actions
     @IBAction func closeRegisterAction(_ sender: Any) {
@@ -88,7 +88,7 @@ private extension RegisterViewController {
             return
         }
 
-        await database.createNewUser(data) { [weak self] response in
+        await service.createNewUser(data) { [weak self] response in
             guard let self = self else { return }
 
             switch response {

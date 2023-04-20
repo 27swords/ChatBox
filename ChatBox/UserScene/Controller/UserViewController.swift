@@ -19,7 +19,7 @@ final class UserViewController: UIViewController {
     @IBOutlet weak var editPhotoButton: UIButton!
         
     //MARK: - Inits
-    lazy var database = DatabaseManager()
+    lazy var service = UserService()
     lazy var user = [DTO]()
     var userDefault = UserDefaults.standard
     
@@ -98,8 +98,8 @@ extension UserViewController: PHPickerViewControllerDelegate {
                 
                 Task { @MainActor in
                     do {
-                        let url = try await self.database.uploadAvatar(image: image)
-                        try await self.database.updateUserProfile(avatarURL: url)
+                        let url = try await self.service.uploadAvatar(image: image)
+                        try await self.service.updateUserProfile(avatarURL: url)
                         DispatchQueue.main.async {
                             self.avatarImageView.image = image
                         }
@@ -121,19 +121,21 @@ private extension UserViewController {
             throw UserServiceError.userNotLoggedIn
         }
         
-        let ref = Storage.storage().reference().child("avatars").child(currentUserId)
+        let storageRef = Storage.storage().reference()
+        let avatarsRef = storageRef.child("avatars")
+        let userAvatarRef = avatarsRef.child(currentUserId)
+        let avatarImageRef = userAvatarRef.child("avatar.jpg")
         
         do {
-            let user = try await database.userInfo()
+            let user = try await service.userInfo()
             self.user = user
             guard let userInfo = user.first else { return }
             
             do {
-                let url = try await ref.downloadURL()
+                let url = try await avatarImageRef.downloadURL()
                 avatarImageView.sd_setImage(with: url)
             } catch {
-                print("Failed to download user's profile picture:", error)
-                avatarImageView.image = UIImage(named: "default_profile_picture")
+                avatarImageView.image = UIImage(systemName: "person")
             }
             
             DispatchQueue.main.async {

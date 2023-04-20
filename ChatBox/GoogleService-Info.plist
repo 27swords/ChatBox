@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>319979845288-rqk1n0g6kdtrg0tk4ego4b9fe5i9votj.apps.googleusercontent.com</string>
+	<string>386442117005-n0p5mgg4rsmv1qk0g4tkqbtp5bl955uq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.319979845288-rqk1n0g6kdtrg0tk4ego4b9fe5i9votj</string>
+	<string>com.googleusercontent.apps.386442117005-n0p5mgg4rsmv1qk0g4tkqbtp5bl955uq</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDWragG6zlkoE6l7upQbeumVDntJ-BnRmg</string>
+	<string>AIzaSyBl9z2phyQxA6KX3_MfF0kzVPs0-RXkv7A</string>
 	<key>GCM_SENDER_ID</key>
-	<string>319979845288</string>
+	<string>386442117005</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>alexanderChervoncev.ChatBox</string>
 	<key>PROJECT_ID</key>
-	<string>chatbox-89c76</string>
+	<string>chatbox-46f39</string>
 	<key>STORAGE_BUCKET</key>
-	<string>chatbox-89c76.appspot.com</string>
+	<string>chatbox-46f39.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:319979845288:ios:5723f68582e9ba259cf49d</string>
+	<string>1:386442117005:ios:f487bd368468e85ce287c4</string>
 </dict>
 </plist>

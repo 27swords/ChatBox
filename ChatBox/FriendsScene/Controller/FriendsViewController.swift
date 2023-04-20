@@ -23,7 +23,7 @@ final class FriendsViewController: UIViewController {
     }()
     
     //MARK: - Inits
-    lazy var database = DatabaseManager()
+    lazy var service = FriendsService()
     var friend = [DTO]()
     
     //MARK: - LifeCycle
@@ -96,7 +96,7 @@ private extension FriendsViewController {
     
     private func getFriend() async {
         do {
-            let friends = try await database.getUsersList()
+            let friends = try await service.getUsersList()
             self.friend = friends
             
             DispatchQueue.main.async {

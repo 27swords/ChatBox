@@ -16,7 +16,7 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
-    lazy var database = DatabaseManager()
+    lazy var service = AuthService()
     lazy var checkFields = CheckFields()
     var userDefault = UserDefaults.standard
 
@@ -76,7 +76,7 @@ private extension AuthViewController {
         
         if checkFields.isValidEmail(email) {
             do {
-                let response = try await database.authInApp(loginField)
+                let response = try await service.authInApp(loginField)
                 switch response {
                     
                 case .success:
