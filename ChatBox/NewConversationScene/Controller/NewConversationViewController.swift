@@ -9,9 +9,11 @@ import UIKit
 
 final class NewConversationViewController: UIViewController {
     
+    //MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -20,11 +22,13 @@ final class NewConversationViewController: UIViewController {
         
     }
     
+    //MARK - Objc methods
     @objc private func dissmissSelf() {
         dismiss(animated: true, completion: nil)
     }
 }
 
+//MARK: - Extension UISearchBarDelegate
 extension NewConversationViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -32,6 +36,7 @@ extension NewConversationViewController: UISearchBarDelegate {
     }
 }
 
+//MARK: - Extension UITableView
 extension NewConversationViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
@@ -50,6 +55,7 @@ extension NewConversationViewController: UITableViewDelegate, UITableViewDataSou
     
 }
 
+//MARK: - Private Extension
 private extension NewConversationViewController {
     func setupTableView() {
         tableView.delegate = self

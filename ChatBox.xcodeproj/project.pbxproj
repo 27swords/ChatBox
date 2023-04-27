@@ -58,6 +58,8 @@
 		49818AFD29A39AE700328CE8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49818AFB29A39AE700328CE8 /* ChatViewController.swift */; };
 		49818B0029A3A19600328CE8 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49818AFF29A3A19600328CE8 /* ChatModel.swift */; };
 		49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49818B0229A3B0BB00328CE8 /* ChatService.swift */; };
+		498B517229FA9A6E0046FF3A /* SearchFiendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498B517029FA9A6E0046FF3A /* SearchFiendsViewController.swift */; };
+		498B517329FA9A6E0046FF3A /* SearchFiendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */; };
 		498D84B92989875500DF535E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84B72989875500DF535E /* TabBarViewController.swift */; };
 		49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49961820298A5FD6003E4AF3 /* FriendsViewController.swift */; };
 		49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49961821298A5FD6003E4AF3 /* FriendsViewController.xib */; };
@@ -106,6 +108,8 @@
 		49818AFB29A39AE700328CE8 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		49818AFF29A3A19600328CE8 /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		49818B0229A3B0BB00328CE8 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
+		498B517029FA9A6E0046FF3A /* SearchFiendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFiendsViewController.swift; sourceTree = "<group>"; };
+		498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchFiendsViewController.xib; sourceTree = "<group>"; };
 		498D84B72989875500DF535E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		49961820298A5FD6003E4AF3 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		49961821298A5FD6003E4AF3 /* FriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsViewController.xib; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 				4969F66129883C4000CD9823 /* AuthScene */,
 				498D84B42989871900DF535E /* TabBarScene */,
 				4996181D298A5F54003E4AF3 /* FriendsScene */,
+				498B516C29FA9A110046FF3A /* SearchFiendsScene */,
 				49CE90C629F9442900472787 /* NewConversationScene */,
 				49818AF729A39AB200328CE8 /* ChatScene */,
 				49D4141129E47656002CD819 /* ChatListScene */,
@@ -411,6 +416,39 @@
 				49CE63A9299135AB008D188A /* CheckFields.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		498B516C29FA9A110046FF3A /* SearchFiendsScene */ = {
+			isa = PBXGroup;
+			children = (
+				498B516E29FA9A330046FF3A /* Model */,
+				498B516F29FA9A3B0046FF3A /* View */,
+				498B516D29FA9A2C0046FF3A /* Controller */,
+			);
+			path = SearchFiendsScene;
+			sourceTree = "<group>";
+		};
+		498B516D29FA9A2C0046FF3A /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				498B517029FA9A6E0046FF3A /* SearchFiendsViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		498B516E29FA9A330046FF3A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		498B516F29FA9A3B0046FF3A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		498D84B42989871900DF535E /* TabBarScene */ = {
@@ -655,6 +693,7 @@
 				4914A7FE298527C70076F03C /* Assets.xcassets in Resources */,
 				4914A7FC298527C40076F03C /* Main.storyboard in Resources */,
 				49D4141829E47747002CD819 /* ChatListViewController.xib in Resources */,
+				498B517329FA9A6E0046FF3A /* SearchFiendsViewController.xib in Resources */,
 				49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */,
 				49CE90D229F94A0100472787 /* NewConversationTableViewCell.xib in Resources */,
 			);
@@ -685,6 +724,7 @@
 				49399F7A29F174FA00FD4D44 /* FriendsService.swift in Sources */,
 				49CE90CC29F9446400472787 /* NewConversationViewController.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,
+				498B517229FA9A6E0046FF3A /* SearchFiendsViewController.swift in Sources */,
 				49D4141729E47747002CD819 /* ChatListViewController.swift in Sources */,
 				49D4142129E48952002CD819 /* ChatListService.swift in Sources */,
 				49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */,

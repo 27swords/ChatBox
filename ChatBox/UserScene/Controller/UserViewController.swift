@@ -7,7 +7,6 @@
 
 import UIKit
 import Firebase
-import FirebaseStorage
 import PhotosUI
 
 final class UserViewController: UIViewController {
@@ -36,7 +35,7 @@ final class UserViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Task { @MainActor in
-            try await userInfoGet()
+            await userInfoGet()
         }
     }
     
@@ -116,37 +115,27 @@ extension UserViewController: PHPickerViewControllerDelegate {
 //MARK: - Private Extension
 private extension UserViewController {
     
-    private func userInfoGet() async throws {
-        guard let currentUserId = Auth.auth().currentUser?.uid else {
-            throw UserServiceError.userNotLoggedIn
-        }
-        
-        let storageRef = Storage.storage().reference()
-        let avatarsRef = storageRef.child("avatars")
-        let userAvatarRef = avatarsRef.child(currentUserId)
-        let avatarImageRef = userAvatarRef.child("avatar.jpg")
-        
-        do {
-            let user = try await service.userInfo()
-            self.user = user
-            guard let userInfo = user.first else { return }
-            
-            do {
-                let url = try await avatarImageRef.downloadURL()
-                avatarImageView.sd_setImage(with: url)
-            } catch {
-                avatarImageView.image = UIImage(systemName: "person")
-            }
+    private func updateUI(user: DTO) {
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.avatarImageView.sd_setImage(with: URL(string: user.avatarURL ?? ""))
             
             DispatchQueue.main.async {
-                self.nicknameLabel.text = userInfo.nickname
-                self.emailLabel.text = userInfo.email
+                self.nicknameLabel.text = user.nickname
+                self.emailLabel.text = user.email
             }
-        } catch {
-            throw error
         }
     }
-
+    
+    private func userInfoGet() async {
+        do {
+            user = try await service.userInfo()
+            if let user = user.first {
+                updateUI(user: user)
+            }
+        } catch {
+            
+        }
+    }
 
     // выход из аккаунта
     private func logOutAcount() {
