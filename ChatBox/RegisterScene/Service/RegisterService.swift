@@ -8,6 +8,7 @@
 import Foundation
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 enum RegisterResponse {
     case success
@@ -24,6 +25,7 @@ final class RegisterService {
     
     //MARK: - Registration methods
     public func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> Void) async {
+        
         do {
             let emailBusy = try await isEmailBusy(data.email)
             if emailBusy {

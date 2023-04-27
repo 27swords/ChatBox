@@ -12,18 +12,25 @@ import InputBarAccessoryView
 final class ChatViewController: MessagesViewController {
 
     //MARK: - Inits
-    var chatID: String?
-    var otherID: String?
-    var messages = [Message]()
+    private let selfSender = Sender(senderId: "1", displayName: "Joe Smith", photoURL: "")
+    private var messages = [Message]()
     
     let chatService = ChatService()
-    let selfSender = Sender(senderId: "1", displayName: "")
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMessageCollectionView()
         setupSendButton()
+        messages.append(Message(sender: selfSender,
+                                messageId: "1",
+                                sentDate: Date(),
+                                kind: .text("Hello world")))
+        
+        messages.append(Message(sender: selfSender,
+                                messageId: "1",
+                                sentDate: Date(),
+                                kind: .text("Hello world, Hello world, Hello world, Hello world")))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,24 +61,13 @@ extension ChatViewController: MessagesDisplayDelegate, MessagesLayoutDelegate, M
     func numberOfSections(in messagesCollectionView: MessageKit.MessagesCollectionView) -> Int {
         return messages.count
     }
-    
-    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-            
-        if message.sender.senderId == currentSender.senderId {
-            return #colorLiteral(red: 0.2998581231, green: 0.5666571259, blue: 0.7788408399, alpha: 1)
-        }
-
-        return #colorLiteral(red: 0.9568627477, green: 0.9568629861, blue: 0.9568629861, alpha: 1)
-    }
 }
 
 
 //MARK: - InputBarAccessoryView Extension
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
-    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-//        let message = Message(sender: selfSender, messageId: "", sentDate: Date(), kind: .text(text))
-        
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {        
     }
 }
 
@@ -83,7 +79,6 @@ private extension ChatViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
-        showMessageTimestampOnSwipeLeft = true
     }
     
     func setupSendButton() {

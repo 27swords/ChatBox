@@ -30,7 +30,6 @@ final class FriendsService {
             let friends = snapshot.documents.compactMap { document -> DTO? in
                 guard let nickname = document.data()["nickname"] as? String else { return nil }
                 guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
-                print("avatarURL", avatarURL)
                 return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarURL)
 
             }

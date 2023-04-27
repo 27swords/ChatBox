@@ -73,14 +73,6 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             }
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = ChatViewController()
-        let friendId = friend[indexPath.row].id
-        vc.otherID = friendId
-        
-        navigationController?.pushViewController(vc, animated: true)
-    }
 }
 
 //MARK: - Private Extension

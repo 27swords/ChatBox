@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 final class AuthViewController: UIViewController {
     
@@ -74,6 +75,11 @@ private extension AuthViewController {
             return
         }
         
+        DispatchQueue.main.async {
+            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            hud.label.text = "Вход..."
+        }
+        
         if checkFields.isValidEmail(email) {
             do {
                 let response = try await service.authInApp(loginField)
@@ -94,6 +100,13 @@ private extension AuthViewController {
             } catch {
                 print("Error:", error.localizedDescription)
             }
+            self.hideHud()
+        }
+    }
+    
+    private func hideHud() {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
         }
     }
     

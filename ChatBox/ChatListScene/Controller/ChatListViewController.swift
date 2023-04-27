@@ -22,6 +22,7 @@ final class ChatListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupNavigationItems()
     }
     
     //MARK: - Objc Methods
@@ -32,11 +33,17 @@ final class ChatListViewController: UIViewController {
             sender.endRefreshing()
         }
     }
+    
+    @objc private func didtapComposeButton() {
+        let vc = NewConversationViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
+    }
 }
 
 extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        2
+        1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -48,11 +55,25 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
 
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ChatViewController()
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 private extension ChatListViewController {
-    private func setupTableView() {
+    private func setupNavigationItems() {
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .compose,
+            target: self,
+            action: #selector(didtapComposeButton)
+        )
+    }
+    
+    private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.addSubview(refreshControl)

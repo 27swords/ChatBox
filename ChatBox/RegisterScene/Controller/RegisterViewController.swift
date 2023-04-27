@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 final class RegisterViewController: UIViewController {
     
@@ -51,7 +52,7 @@ final class RegisterViewController: UIViewController {
 
 //MARK: - Private Extension
 private extension RegisterViewController {
-    
+
     // Регистрация пользователя и проверка входных данных
     private func createUser() async {
         guard let email = emailTextField.text else { return }
@@ -60,7 +61,7 @@ private extension RegisterViewController {
         guard let repPassword = repPassTextField.text else { return }
 
         let data = DTO(id: "", email: email, password: password, nickname: nickName)
-
+            
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"
             errorEmail.twitching()
@@ -86,6 +87,11 @@ private extension RegisterViewController {
             errorPassword.text = "Пароль слишком простой"
             errorPassword.twitching()
             return
+        }
+        
+        DispatchQueue.main.async {
+            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            hud.label.text = "Регистрация..."
         }
 
         await service.createNewUser(data) { [weak self] response in
@@ -118,6 +124,13 @@ private extension RegisterViewController {
             case .unknownError:
                 print("unknownError")
             }
+            self.hideHud()
+        }
+    }
+    
+    private func hideHud() {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
         }
     }
     
@@ -131,6 +144,8 @@ private extension RegisterViewController {
         errorEmail.text = ""
         errorPassword.text = ""
     }
+    
+    
     
     private func showAlert() {
         Task { @MainActor in

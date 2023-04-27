@@ -64,6 +64,13 @@
 		49AF61AB299AB7D000CA1DDF /* UIView+Twitching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */; };
 		49CE63AA299135AB008D188A /* CheckFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63A9299135AB008D188A /* CheckFields.swift */; };
 		49CE63AE29914FA1008D188A /* DTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AD29914FA1008D188A /* DTO.swift */; };
+		49CE90BF29F9216100472787 /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90BE29F9216100472787 /* MBProgressHUD */; };
+		49CE90C229F9254E00472787 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90C129F9254E00472787 /* Realm */; };
+		49CE90C429F9254E00472787 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90C329F9254E00472787 /* RealmSwift */; };
+		49CE90CC29F9446400472787 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE90CA29F9446400472787 /* NewConversationViewController.swift */; };
+		49CE90CD29F9446400472787 /* NewConversationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49CE90CB29F9446400472787 /* NewConversationViewController.xib */; };
+		49CE90D129F94A0100472787 /* NewConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE90CF29F94A0100472787 /* NewConversationTableViewCell.swift */; };
+		49CE90D229F94A0100472787 /* NewConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49CE90D029F94A0100472787 /* NewConversationTableViewCell.xib */; };
 		49D4141729E47747002CD819 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D4141529E47747002CD819 /* ChatListViewController.swift */; };
 		49D4141829E47747002CD819 /* ChatListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49D4141629E47747002CD819 /* ChatListViewController.xib */; };
 		49D4141B29E47BA9002CD819 /* ChatListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D4141929E47BA9002CD819 /* ChatListTableViewCell.swift */; };
@@ -105,6 +112,10 @@
 		49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Twitching.swift"; sourceTree = "<group>"; };
 		49CE63A9299135AB008D188A /* CheckFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckFields.swift; sourceTree = "<group>"; };
 		49CE63AD29914FA1008D188A /* DTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTO.swift; sourceTree = "<group>"; };
+		49CE90CA29F9446400472787 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
+		49CE90CB29F9446400472787 /* NewConversationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewConversationViewController.xib; sourceTree = "<group>"; };
+		49CE90CF29F94A0100472787 /* NewConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationTableViewCell.swift; sourceTree = "<group>"; };
+		49CE90D029F94A0100472787 /* NewConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewConversationTableViewCell.xib; sourceTree = "<group>"; };
 		49D4141529E47747002CD819 /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		49D4141629E47747002CD819 /* ChatListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatListViewController.xib; sourceTree = "<group>"; };
 		49D4141929E47BA9002CD819 /* ChatListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListTableViewCell.swift; sourceTree = "<group>"; };
@@ -125,13 +136,16 @@
 				4949692E29E7363D00EDA89D /* FirebaseFirestoreSwift in Frameworks */,
 				4949691829E7363D00EDA89D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				4949693029E7363D00EDA89D /* FirebaseFunctions in Frameworks */,
+				49CE90C229F9254E00472787 /* Realm in Frameworks */,
 				497BEA0829E070DF00FC02EF /* SDWebImage in Frameworks */,
 				4949691229E7363D00EDA89D /* FirebaseAnalytics in Frameworks */,
+				49CE90C429F9254E00472787 /* RealmSwift in Frameworks */,
 				4949691E29E7363D00EDA89D /* FirebaseAuth in Frameworks */,
 				4949692829E7363D00EDA89D /* FirebaseDynamicLinks in Frameworks */,
 				4949692229E7363D00EDA89D /* FirebaseCrashlytics in Frameworks */,
 				4949693A29E7363D00EDA89D /* FirebaseMLModelDownloader in Frameworks */,
 				4949692629E7363D00EDA89D /* FirebaseDatabaseSwift in Frameworks */,
+				49CE90BF29F9216100472787 /* MBProgressHUD in Frameworks */,
 				4949692A29E7363D00EDA89D /* FirebaseFirestore in Frameworks */,
 				4949693829E7363D00EDA89D /* FirebaseInstallations in Frameworks */,
 				4949693229E7363D00EDA89D /* FirebaseFunctionsCombine-Community in Frameworks */,
@@ -264,6 +278,7 @@
 				4969F66129883C4000CD9823 /* AuthScene */,
 				498D84B42989871900DF535E /* TabBarScene */,
 				4996181D298A5F54003E4AF3 /* FriendsScene */,
+				49CE90C629F9442900472787 /* NewConversationScene */,
 				49818AF729A39AB200328CE8 /* ChatScene */,
 				49D4141129E47656002CD819 /* ChatListScene */,
 				490F5CB429D3546500B688F6 /* UserScene */,
@@ -351,7 +366,6 @@
 			isa = PBXGroup;
 			children = (
 				49818B0229A3B0BB00328CE8 /* ChatService.swift */,
-				49818AFF29A3A19600328CE8 /* ChatModel.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -368,6 +382,7 @@
 			isa = PBXGroup;
 			children = (
 				497BEA0229E0564B00FC02EF /* Service */,
+				49CE90C529F93E9A00472787 /* Model */,
 				49818AF929A39AC300328CE8 /* View */,
 				49818AF829A39ABD00328CE8 /* Controller */,
 			);
@@ -440,6 +455,49 @@
 				49076074298A6B2500AFCF27 /* FriendsTableViewCell.xib */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		49CE90C529F93E9A00472787 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				49818AFF29A3A19600328CE8 /* ChatModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		49CE90C629F9442900472787 /* NewConversationScene */ = {
+			isa = PBXGroup;
+			children = (
+				49CE90C929F9444500472787 /* Model */,
+				49CE90C829F9444000472787 /* View */,
+				49CE90C729F9443A00472787 /* Controller */,
+			);
+			path = NewConversationScene;
+			sourceTree = "<group>";
+		};
+		49CE90C729F9443A00472787 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				49CE90CA29F9446400472787 /* NewConversationViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		49CE90C829F9444000472787 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				49CE90CB29F9446400472787 /* NewConversationViewController.xib */,
+				49CE90CF29F94A0100472787 /* NewConversationTableViewCell.swift */,
+				49CE90D029F94A0100472787 /* NewConversationTableViewCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		49CE90C929F9444500472787 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		49D4141129E47656002CD819 /* ChatListScene */ = {
@@ -533,6 +591,9 @@
 				4949694129E7363D00EDA89D /* FirebaseRemoteConfigSwift */,
 				4949694329E7363D00EDA89D /* FirebaseStorage */,
 				4949694529E7363D00EDA89D /* FirebaseStorageCombine-Community */,
+				49CE90BE29F9216100472787 /* MBProgressHUD */,
+				49CE90C129F9254E00472787 /* Realm */,
+				49CE90C329F9254E00472787 /* RealmSwift */,
 			);
 			productName = ChatBox;
 			productReference = 4914A7F1298527C40076F03C /* ChatBox.app */;
@@ -566,6 +627,8 @@
 				49818AF429A3786F00328CE8 /* XCRemoteSwiftPackageReference "MessageKit" */,
 				497BEA0629E070DE00FC02EF /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				4949691029E7363D00EDA89D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				49CE90BD29F9216100472787 /* XCRemoteSwiftPackageReference "MBProgressHUD" */,
+				49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 4914A7F2298527C40076F03C /* Products */;
 			projectDirPath = "";
@@ -587,11 +650,13 @@
 				4969F65B29882FD900CD9823 /* RegisterViewController.xib in Resources */,
 				49D4141C29E47BA9002CD819 /* ChatListTableViewCell.xib in Resources */,
 				49FF642C29883DD90047C2C3 /* AuthViewController.xib in Resources */,
+				49CE90CD29F9446400472787 /* NewConversationViewController.xib in Resources */,
 				4914A809298529E40076F03C /* GoogleService-Info.plist in Resources */,
 				4914A7FE298527C70076F03C /* Assets.xcassets in Resources */,
 				4914A7FC298527C40076F03C /* Main.storyboard in Resources */,
 				49D4141829E47747002CD819 /* ChatListViewController.xib in Resources */,
 				49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */,
+				49CE90D229F94A0100472787 /* NewConversationTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,12 +683,14 @@
 				4914A7F5298527C40076F03C /* AppDelegate.swift in Sources */,
 				49818B0029A3A19600328CE8 /* ChatModel.swift in Sources */,
 				49399F7A29F174FA00FD4D44 /* FriendsService.swift in Sources */,
+				49CE90CC29F9446400472787 /* NewConversationViewController.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,
 				49D4141729E47747002CD819 /* ChatListViewController.swift in Sources */,
 				49D4142129E48952002CD819 /* ChatListService.swift in Sources */,
 				49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */,
 				49CE63AA299135AB008D188A /* CheckFields.swift in Sources */,
 				49399F7429F1737E00FD4D44 /* AuthService.swift in Sources */,
+				49CE90D129F94A0100472787 /* NewConversationTableViewCell.swift in Sources */,
 				490F5CBA29D354B600B688F6 /* UserViewController.swift in Sources */,
 				49FF642B29883DD90047C2C3 /* AuthViewController.swift in Sources */,
 				4969F65F298839BB00CD9823 /* RegisterViewController.swift in Sources */,
@@ -868,6 +935,22 @@
 				kind = branch;
 			};
 		};
+		49CE90BD29F9216100472787 /* XCRemoteSwiftPackageReference "MBProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jdg/MBProgressHUD.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.0;
+			};
+		};
+		49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1015,6 +1098,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 49818AF429A3786F00328CE8 /* XCRemoteSwiftPackageReference "MessageKit" */;
 			productName = MessageKit;
+		};
+		49CE90BE29F9216100472787 /* MBProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49CE90BD29F9216100472787 /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
+			productName = MBProgressHUD;
+		};
+		49CE90C129F9254E00472787 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		49CE90C329F9254E00472787 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
