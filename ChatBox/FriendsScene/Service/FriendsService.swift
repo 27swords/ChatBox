@@ -41,4 +41,17 @@ final class FriendsService {
             throw FriendsServiceError.failedToRetrieveData
         }
     }
+    
+    public func deleteFriends(friendID: String) async throws {
+        guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
+        let currentUserRef = database.collection("users").document(currentUserId)
+        try await currentUserRef.updateData([
+            "friends": FieldValue.arrayRemove([friendID])
+        ])
+        
+        let friendRef = database.collection("users").document(friendID)
+            try await friendRef.updateData([
+                "friends": FieldValue.arrayRemove([currentUserId])
+            ])
+    }
 }

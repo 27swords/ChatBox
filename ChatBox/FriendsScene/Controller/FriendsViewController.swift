@@ -79,6 +79,24 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             }
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let friend = self.friend[indexPath.row]
+        
+        let action = UIContextualAction(style: .destructive, title: "Удалить") { (action, view, completionHandler) in
+            Task { @MainActor in
+                do {
+                    try await self.service.deleteFriends(friendID: friend.id)
+                    self.friend.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                } catch {
+                    print("Failed to delete friend: \(error.localizedDescription)")
+                }
+                completionHandler(true)
+            }
+        }
+        return UISwipeActionsConfiguration(actions: [action])
+    }
 }
 
 //MARK: - Private Extension
