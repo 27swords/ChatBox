@@ -60,6 +60,9 @@
 		49818B0329A3B0BB00328CE8 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49818B0229A3B0BB00328CE8 /* ChatService.swift */; };
 		498B517229FA9A6E0046FF3A /* SearchFiendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498B517029FA9A6E0046FF3A /* SearchFiendsViewController.swift */; };
 		498B517329FA9A6E0046FF3A /* SearchFiendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */; };
+		498B517629FA9ECB0046FF3A /* SearchFiendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498B517429FA9ECB0046FF3A /* SearchFiendsTableViewCell.swift */; };
+		498B517729FA9ECB0046FF3A /* SearchFiendsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 498B517529FA9ECB0046FF3A /* SearchFiendsTableViewCell.xib */; };
+		498B517A29FAA2680046FF3A /* SearchFriendsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498B517929FAA2680046FF3A /* SearchFriendsService.swift */; };
 		498D84B92989875500DF535E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498D84B72989875500DF535E /* TabBarViewController.swift */; };
 		49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49961820298A5FD6003E4AF3 /* FriendsViewController.swift */; };
 		49961823298A5FD6003E4AF3 /* FriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49961821298A5FD6003E4AF3 /* FriendsViewController.xib */; };
@@ -110,6 +113,9 @@
 		49818B0229A3B0BB00328CE8 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		498B517029FA9A6E0046FF3A /* SearchFiendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFiendsViewController.swift; sourceTree = "<group>"; };
 		498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchFiendsViewController.xib; sourceTree = "<group>"; };
+		498B517429FA9ECB0046FF3A /* SearchFiendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFiendsTableViewCell.swift; sourceTree = "<group>"; };
+		498B517529FA9ECB0046FF3A /* SearchFiendsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchFiendsTableViewCell.xib; sourceTree = "<group>"; };
+		498B517929FAA2680046FF3A /* SearchFriendsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFriendsService.swift; sourceTree = "<group>"; };
 		498D84B72989875500DF535E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		49961820298A5FD6003E4AF3 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		49961821298A5FD6003E4AF3 /* FriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsViewController.xib; sourceTree = "<group>"; };
@@ -421,6 +427,7 @@
 		498B516C29FA9A110046FF3A /* SearchFiendsScene */ = {
 			isa = PBXGroup;
 			children = (
+				498B517829FA9F100046FF3A /* Service */,
 				498B516E29FA9A330046FF3A /* Model */,
 				498B516F29FA9A3B0046FF3A /* View */,
 				498B516D29FA9A2C0046FF3A /* Controller */,
@@ -447,8 +454,18 @@
 			isa = PBXGroup;
 			children = (
 				498B517129FA9A6E0046FF3A /* SearchFiendsViewController.xib */,
+				498B517429FA9ECB0046FF3A /* SearchFiendsTableViewCell.swift */,
+				498B517529FA9ECB0046FF3A /* SearchFiendsTableViewCell.xib */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		498B517829FA9F100046FF3A /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				498B517929FAA2680046FF3A /* SearchFriendsService.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		498D84B42989871900DF535E /* TabBarScene */ = {
@@ -683,6 +700,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4914A801298527C70076F03C /* LaunchScreen.storyboard in Resources */,
+				498B517729FA9ECB0046FF3A /* SearchFiendsTableViewCell.xib in Resources */,
 				490F5CBB29D354B600B688F6 /* UserViewController.xib in Resources */,
 				49076076298A6B2500AFCF27 /* FriendsTableViewCell.xib in Resources */,
 				4969F65B29882FD900CD9823 /* RegisterViewController.xib in Resources */,
@@ -712,6 +730,7 @@
 				49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */,
 				49076079298A728400AFCF27 /* UIImageView+Circle.swift in Sources */,
 				49399F7129F172DC00FD4D44 /* RegisterService.swift in Sources */,
+				498B517629FA9ECB0046FF3A /* SearchFiendsTableViewCell.swift in Sources */,
 				49D4141B29E47BA9002CD819 /* ChatListTableViewCell.swift in Sources */,
 				49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */,
 				4914A7F9298527C40076F03C /* StartViewController.swift in Sources */,
@@ -724,6 +743,7 @@
 				49399F7A29F174FA00FD4D44 /* FriendsService.swift in Sources */,
 				49CE90CC29F9446400472787 /* NewConversationViewController.swift in Sources */,
 				4914A7F7298527C40076F03C /* SceneDelegate.swift in Sources */,
+				498B517A29FAA2680046FF3A /* SearchFriendsService.swift in Sources */,
 				498B517229FA9A6E0046FF3A /* SearchFiendsViewController.swift in Sources */,
 				49D4141729E47747002CD819 /* ChatListViewController.swift in Sources */,
 				49D4142129E48952002CD819 /* ChatListService.swift in Sources */,

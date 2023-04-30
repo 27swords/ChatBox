@@ -30,7 +30,7 @@ final class FriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        
+        setupNavigationItems()
         Task { @MainActor in
             await getFriend()
         }
@@ -39,12 +39,18 @@ final class FriendsViewController: UIViewController {
     //MARK: - Objc Methods
     @objc func refresh(sender: UIRefreshControl) {
         Task { @MainActor in
-            await self.getFriend()
+            await getFriend()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 sender.endRefreshing()
             }
         }
+    }
+    
+    @objc private func didtapComposeButton() {
+        let vc = SearchFiendsViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
     }
 }
 
@@ -66,7 +72,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         
         DispatchQueue.global(qos: .userInitiated).async {
             cell.cunfigureImageCell(users: friendCell.avatarURL ?? "")
-               
+
                 DispatchQueue.main.async {
                     cell.cunfigureTextCell(users: friendCell.nickname)
                 }
@@ -78,7 +84,6 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
 //MARK: - Private Extension
 private extension FriendsViewController {
     private func setupTableView() {
-        navigationController?.navigationBar.prefersLargeTitles = true
         tableView.dataSource = self
         tableView.delegate = self
         tableView.addSubview(refreshControl)
@@ -86,9 +91,18 @@ private extension FriendsViewController {
                            forCellReuseIdentifier: String(describing: FriendsTableViewCell.self))
     }
     
+    private func setupNavigationItems() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(didtapComposeButton)
+        )
+    }
+    
     private func getFriend() async {
         do {
-            let friends = try await service.getUsersList()
+            let friends = try await service.getFriendsList()
             self.friend = friends
             
             DispatchQueue.main.async {

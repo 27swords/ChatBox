@@ -60,7 +60,7 @@ private extension RegisterViewController {
         guard let password = passTextField.text else { return }
         guard let repPassword = repPassTextField.text else { return }
 
-        let data = DTO(id: "", email: email, password: password, nickname: nickName)
+        let data = DTO(id: "", email: email, password: password, nickname: nickName, avatarURL: "")
             
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"

@@ -69,10 +69,9 @@ final class RegisterService {
             changeRequest.photoURL = URL(string: avatarURL)
         }
         try await changeRequest.commitChanges()
-        let data: [String: Any] = ["email": email, "nickname": nickname, "avatarURL": avatarURL ?? ""]
+        let data: [String: Any] = ["id": authResult.user.uid, "email": email, "nickname": nickname, "avatarURL": avatarURL ?? "",]
         try await database.collection("users").document(authResult.user.uid).setData(data)
-        try await database.collection("users").document(authResult.user.uid).collection("friends").document().setData([:])
-                
+        
         return authResult
     }
     

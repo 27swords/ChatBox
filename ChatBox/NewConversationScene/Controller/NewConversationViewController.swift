@@ -16,13 +16,12 @@ final class NewConversationViewController: UIViewController {
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         setupTableView()
         setupSearchBar()
         
     }
     
-    //MARK - Objc methods
+    //MARK: - Objc methods
     @objc private func dissmissSelf() {
         dismiss(animated: true, completion: nil)
     }

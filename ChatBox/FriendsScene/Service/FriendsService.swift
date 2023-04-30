@@ -12,6 +12,7 @@ import FirebaseFirestore
 enum FriendsServiceError: Error {
     case userNotLoggedIn
     case failedToRetrieveData
+    case errorUid
 }
 
 final class FriendsService {
@@ -19,19 +20,21 @@ final class FriendsService {
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
     
-    public func getUsersList() async throws -> [DTO] {
-        guard let email = auth.currentUser?.email else { throw FriendsServiceError.userNotLoggedIn }
-
+    public func getFriendsList() async throws -> [DTO] {
+        guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
+        let currentUserRef = database.collection("users").document(currentUserId)
+        let currentUserData = try await currentUserRef.getDocument()
+        guard let friendIds = currentUserData.data()?["friends"] as? [String], !friendIds.isEmpty else { return [] }
+        
         let query = database.collection("users")
-            .whereField("email", isNotEqualTo: email)
-
+            .whereField("id", in: friendIds)
+        
         do {
             let snapshot = try await query.getDocuments()
             let friends = snapshot.documents.compactMap { document -> DTO? in
                 guard let nickname = document.data()["nickname"] as? String else { return nil }
-                guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
-                return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarURL)
-
+                guard let avatarUrl = document.data()["avatarURL"] as? String else { return nil }
+                return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarUrl)
             }
             return friends
         } catch {

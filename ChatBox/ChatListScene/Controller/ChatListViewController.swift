@@ -41,6 +41,7 @@ final class ChatListViewController: UIViewController {
     }
 }
 
+//MARK: - Extension UITableView
 extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
@@ -63,6 +64,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+//MARK: - Private Exntension
 private extension ChatListViewController {
     private func setupNavigationItems() {
         navigationController?.navigationBar.prefersLargeTitles = true
