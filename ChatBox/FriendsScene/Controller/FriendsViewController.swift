@@ -80,6 +80,18 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedFriend = friend[indexPath.row]
+        let vc = ChatViewController()
+    
+        vc.otherID = selectedFriend.id
+        vc.title = selectedFriend.nickname
+        vc.navigationItem.largeTitleDisplayMode = .never
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let friend = self.friend[indexPath.row]
         
