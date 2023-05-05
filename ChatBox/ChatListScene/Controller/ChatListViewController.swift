@@ -17,20 +17,31 @@ final class ChatListViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         return refreshControl
     }()
+    
+    //MARK: - Propierties
+    lazy var service = ChatListService()
+    var chats = [Conversation]()
 
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupNavigationItems()
+        
+        Task { @MainActor in
+            await fetchConversations()
+        }
     }
     
     //MARK: - Objc Methods
     @objc func refresh(sender: UIRefreshControl) {
         Task { @MainActor in
+            await fetchConversations()
             
-            self.tableView.reloadData()
-            sender.endRefreshing()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                sender.endRefreshing()
+            }
         }
     }
     
@@ -44,7 +55,7 @@ final class ChatListViewController: UIViewController {
 //MARK: - Extension UITableView
 extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        return chats.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -53,12 +64,26 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
         else {
             return UITableViewCell()
         }
+        let convoCell = chats[indexPath.row]
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            cell.cunfigureImageCell(users: convoCell.avatarUrl ?? "")
+            
+            DispatchQueue.main.async {
+                cell.configureChatListCell(items: convoCell)
+            }
+        }
 
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedFriend = chats[indexPath.row]
         let vc = ChatViewController()
+    
+        vc.otherID = selectedFriend.otherId
+        vc.title = selectedFriend.nickname
+        vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -81,5 +106,18 @@ private extension ChatListViewController {
         tableView.addSubview(refreshControl)
         tableView.register(UINib(nibName: String(describing: ChatListTableViewCell.self), bundle: nil),
                            forCellReuseIdentifier: String(describing: ChatListTableViewCell.self))
+    }
+    
+    private func fetchConversations() async {
+        do {
+            let chats = try await service.getConversations()
+            self.chats = chats
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {
+            print("error", error.localizedDescription)
+        }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ChatListTableViewCell: UITableViewCell {
     
@@ -29,8 +30,12 @@ class ChatListTableViewCell: UITableViewCell {
         
     }
     
-//    func configureChatListCell(items: Conversation) {
-//        nameLabel.text = items
-//    }
+    func configureChatListCell(items: Conversation) {
+        nameLabel.text = items.nickname
+        messageLabel.text = items.lastMessage
+    }
     
+    func cunfigureImageCell(users: String) {
+        avatarImageView.sd_setImage(with: URL(string: users))
+    }
 }

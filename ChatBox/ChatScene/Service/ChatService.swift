@@ -12,13 +12,14 @@ import FirebaseFirestore
 enum ChatServiceError: Error {
     case noCurrentUser
     case invalidData
+    case failedToRetrieveData
 }
 
 final class ChatService {
     
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
-    
+        
     public func sendMessage(otherId: String?, conversationId: String?, text: String) async throws -> String {
         guard let uid = auth.currentUser?.uid else { throw ChatServiceError.noCurrentUser }
 
@@ -31,6 +32,11 @@ final class ChatService {
         if let convoId = conversationId {
             let messageRef = database.collection("conversations").document(convoId).collection("messages").document()
             try await messageRef.setData(messageData)
+
+            let convoRef = database.collection("conversations").document(convoId)
+            var convoData = try await convoRef.getDocument().data() ?? [:]
+            convoData["lastMessage"] = messageData
+            try await convoRef.setData(convoData)
             return convoId
         } else {
             guard let otherId = otherId else {
@@ -65,11 +71,13 @@ final class ChatService {
                 let selfNickname = selfUser?["nickname"] as? String ?? ""
                 let otherNickname = otherUser?["nickname"] as? String ?? ""
 
+
                 // Add nicknames to convoData
                 let convoData: [String: Any] = [
                     "date": Date(),
                     "members": [uid, otherId],
-                    "nicknames": [uid: selfNickname, otherId: otherNickname]
+                    "nicknames": [uid: selfNickname, otherId: otherNickname],
+                    "lastMessage": messageData
                 ]
 
                 let batch = database.batch()
