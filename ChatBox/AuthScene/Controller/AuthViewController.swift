@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 final class AuthViewController: UIViewController {
     
@@ -16,86 +17,111 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
-    lazy var authService = AuthModel()
+    lazy var service = AuthService()
     lazy var checkFields = CheckFields()
     var userDefault = UserDefaults.standard
+    
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        emailTextField.autocorrectionType = .no
+    }
 
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {
         delegate?.closeVC()
+        
+        emailTextField.text = nil
+        passwordTextField.text = nil
+        loginErrorLabel.isHidden = true
     }
     
     @IBAction func logInChat(_ sender: Any) {
-        loginChat() 
+        Task { @MainActor in
+            await loginChat()
+        }
     }
         
-    //MARK: - Methods
-    //скрытие клавиатуры по тапу
+    //MARK: - override methods
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
 }
 
+//MARK: - Private Exntension
 private extension AuthViewController {
-    private func loginChat() {
+    ///authorization verification and authorization
+    private func loginChat() async {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
-        let loginField = DTO(email: email, password: password, nickname: email)
+        let loginField = DTO(id: "", email: email, password: password, nickname: email, avatarURL: "")
         
         if email.isEmpty && password.isEmpty  {
             print("Email or passwords is Empty")
             loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
-            return
-        }
-
-        if !checkFields.isValidEmail(email)  {
-            print("Error Email")
-            loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
-            return
-        }
-
-        if !checkFields.isPasswordValid(password) {
-            print("Error Password")
-            loginErrorLabel.isHidden = false
-            loginErrorLabel.twitching(duration: 0.5)
+            loginErrorLabel.twitching()
             return
         }
         
+        if !checkFields.isValidEmail(email)  {
+            print("Error Email")
+            loginErrorLabel.isHidden = false
+            loginErrorLabel.twitching()
+            return
+        }
+        
+        if !checkFields.isPasswordValid(password) {
+            print("Error Password")
+            loginErrorLabel.isHidden = false
+            loginErrorLabel.twitching()
+            return
+        }
+        
+        DispatchQueue.main.async {
+            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            hud.label.text = "Вход..."
+        }
+        
         if checkFields.isValidEmail(email) {
-            authService.authInApp(loginField) { [weak self] response in
+            do {
+                let response = try await service.authInApp(loginField)
                 switch response {
                     
                 case .success:
-                    print("success")
-                    self?.userDefault.set(true, forKey: "isLogin")
-                    self?.delegate?.openChat()
-                    
+                    self.userDefault.set(true, forKey: "isLogin")
+                    self.delegate?.openChat()
                 case .errorAccountNotVerified:
-                    print("errorAccountNotVerified")
-                    self?.showAlert()
-                    
+                    self.showAlert()
                 case .errorLogin:
-                    print("errorLogin")
-                    self?.loginErrorLabel.isHidden = false
-                    self?.loginErrorLabel.twitching(duration: 0.5)
-                                        
+                    self.loginErrorLabel.isHidden = false
+                    self.loginErrorLabel.twitching()
                 case .error:
-                    print("error")
-                    self?.loginErrorLabel.isHidden = false
-                    self?.loginErrorLabel.twitching(duration: 0.5)
+                    self.loginErrorLabel.isHidden = false
+                    self.loginErrorLabel.twitching()
                 }
+            } catch {
+                print("Error:", error.localizedDescription)
             }
+            self.hideHud()
         }
     }
-
+    
+    ///hiding the loading indicator
+    private func hideHud() {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+    }
+    
+    ///alert about an unconfirmed email address
     private func showAlert() {
-        let title = "Активация"
-        let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let alertButton = UIAlertAction(title: "OK", style: .cancel)
-        alert.addAction(alertButton)
-        present(alert, animated: true)
+        Task { @MainActor in
+            let title = "Активация"
+            let message = "Вы не активировали почту! Вам выслано повторное письмо Активации"
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alertButton = UIAlertAction(title: "OK", style: .cancel)
+            alert.addAction(alertButton)
+            present(alert, animated: true)
+        }
     }
 }

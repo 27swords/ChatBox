@@ -16,33 +16,41 @@ final class FriendsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - Views
-    private lazy var refreshControl: CustomRefreshControl = {
-        let refreshControl = CustomRefreshControl()
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         return refreshControl
     }()
     
     //MARK: - Inits
     lazy var service = FriendsService()
-    var friend = [FriendsModel]()
+    var friend = [DTO]()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        getFriend()
+        setupNavigationItems()
+        Task { @MainActor in
+            await getFriend()
+        }
     }
     
     //MARK: - Objc Methods
-    @objc func refresh(sender: CustomRefreshControl) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.getFriend()
-            
+    @objc func refresh(sender: UIRefreshControl) {
+        Task { @MainActor in
+            await getFriend()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 sender.endRefreshing()
             }
         }
+    }
+    
+    @objc private func didtapComposeButton() {
+        let vc = SearchUserViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
     }
 }
 
@@ -64,7 +72,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         
         DispatchQueue.global(qos: .userInitiated).async {
             cell.cunfigureImageCell(users: friendCell.avatarURL ?? "")
-               
+
                 DispatchQueue.main.async {
                     cell.cunfigureTextCell(users: friendCell.nickname)
                 }
@@ -72,12 +80,43 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        let letters = Set(friend.compactMap { $0.nickname.first?.uppercased() })
+        return letters.sorted()
+    }
+    
+    func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+        return friend.firstIndex { $0.nickname.hasPrefix(title) } ?? 0
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedFriend = friend[indexPath.row]
         let vc = ChatViewController()
-        let friendId = friend[indexPath.row].id
-        vc.otherID = friendId
+    
+        vc.otherID = selectedFriend.id
+        vc.title = selectedFriend.nickname
+        vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let friend = self.friend[indexPath.row]
+        
+        let action = UIContextualAction(style: .destructive, title: "Удалить") { (action, view, completionHandler) in
+            Task { @MainActor in
+                do {
+                    try await self.service.deleteFriends(friendID: friend.id)
+                    self.friend.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                } catch {
+                    print("Failed to delete friend: \(error.localizedDescription)")
+                }
+                completionHandler(true)
+            }
+        }
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }
 
@@ -91,16 +130,26 @@ private extension FriendsViewController {
                            forCellReuseIdentifier: String(describing: FriendsTableViewCell.self))
     }
     
-    private func getFriend() {
-        service.getUsersList { [weak self] friends in
-            DispatchQueue.global(qos: .userInitiated).async {
-                self?.friend = friends
-                
-                
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
+    private func setupNavigationItems() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(didtapComposeButton)
+        )
+    }
+    
+    ///display a list of friends in the view
+    private func getFriend() async {
+        do {
+            let friends = try await service.getFriendsList()
+            self.friend = friends.sorted(by: { $0.nickname < $1.nickname })
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
             }
+        } catch {
+            print("error", error.localizedDescription)
         }
     }
 }

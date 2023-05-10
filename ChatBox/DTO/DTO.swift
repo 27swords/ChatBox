@@ -5,9 +5,11 @@
 //  Created by Alexander Chervoncev on 6/2/2023.
 //
 
-import UIKit
+import Foundation
 
+///user parameters
 struct DTO {
+    var id: String
     var email: String
     var password: String
     var nickname: String

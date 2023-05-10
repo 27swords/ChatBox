@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserViewController" customModule="ChatBox" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
                 <outlet property="avatarImageView" destination="YO7-gX-uiA" id="MU8-Le-oQ0"/>
                 <outlet property="editPhotoButton" destination="KuI-Ku-jsS" id="UDj-DV-fCT"/>
@@ -23,7 +23,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" id="Lh3-v7-3ct">
-                    <rect key="frame" x="0.0" y="92" width="375" height="686"/>
+                    <rect key="frame" x="0.0" y="150" width="375" height="644"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" catalog="system" id="YO7-gX-uiA">
@@ -40,7 +40,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fwt-aZ-CmB">
-                            <rect key="frame" x="126" y="33" width="242" height="21"/>
+                            <rect key="frame" x="126" y="31" width="242" height="21"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
@@ -58,12 +58,12 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="HzD-Cz-2WR">
-                            <rect key="frame" x="96" y="573" width="180" height="35"/>
+                            <rect key="frame" x="96" y="531" width="180" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Выйти из аккаунта"/>
                             <connections>
-                                <action selector="logOutAction:" destination="-1" eventType="touchUpInside" id="PGx-ls-SCR"/>
+                                <action selector="logOutAction:" destination="-1" eventType="touchUpInside" id="qqo-e5-WZa"/>
                             </connections>
                         </button>
                     </subviews>
@@ -71,7 +71,7 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <point key="canvasLocation" x="130.37383177570092" y="-12.958963282937367"/>
+            <point key="canvasLocation" x="128.80000000000001" y="-13.300492610837439"/>
         </view>
     </objects>
     <resources>

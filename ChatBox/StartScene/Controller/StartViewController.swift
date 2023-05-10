@@ -16,6 +16,7 @@ protocol StartViewControllerDelegate: AnyObject {
 
 final class StartViewController: UIViewController {
     
+    //MARK: - Inits
     weak var delegate: StartViewControllerDelegate?
     lazy var authVC = AuthViewController()
     lazy var registerVC = RegisterViewController()
@@ -38,25 +39,30 @@ final class StartViewController: UIViewController {
     }
 }
 
+//MARK: - extension StartViewControllerDelegate
 extension StartViewController: StartViewControllerDelegate {
     
+    ///transition animation
     func fadeAnimation() {
         let transition = CATransition()
         transition.duration = 0.2
         transition.type = .fade
-        view.window?.layer.add(transition, forKey: kCATransition)
+        self.view.window?.layer.add(transition, forKey: kCATransition)
     }
     
+    ///opening the registration View
     func openRegisterVC() {
         fadeAnimation()
         self.view.addSubview(registerVC.view)
     }
     
+    ///openinng the auth View
     func openAuthVC() {
         fadeAnimation()
         self.view.addSubview(authVC.view)
     }
     
+    ///auth in chat
     func openChat() {
         let tabBarVC = TabBarViewController()
 
@@ -67,6 +73,7 @@ extension StartViewController: StartViewControllerDelegate {
         window.rootViewController = tabBarVC
     }
 
+    ///exit from view
     func closeVC() {
         fadeAnimation()
         authVC.view.removeFromSuperview()

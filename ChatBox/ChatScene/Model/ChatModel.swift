@@ -8,14 +8,15 @@
 import Foundation
 import MessageKit
 
-    struct Sender: SenderType {
-        var senderId: String
-        var displayName: String
-    }
+struct Sender: SenderType {
+    var senderId: String
+    var displayName: String
+    var photoURL: String
+}
 
-    struct Message: MessageType {
-        var sender: MessageKit.SenderType
-        var messageId: String
-        var sentDate: Date
-        var kind: MessageKit.MessageKind
-    }
+struct Message: MessageType {
+    var sender: SenderType
+    var messageId: String
+    var sentDate: Date
+    var kind: MessageKind
+}

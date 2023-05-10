@@ -2,36 +2,60 @@
 //  FriendsService.swift
 //  ChatBox
 //
-//  Created by Alexander Chervoncev on 17/2/2023.
+//  Created by Alexander Chervoncev on 20/4/2023.
 //
 
 import Foundation
 import Firebase
 import FirebaseFirestore
 
-final class FriendsService {
-    
-    func getUsersList(completion: @escaping ([FriendsModel]) -> ()) {
-        let dataBase = Firestore.firestore()
-        guard let email = Auth.auth().currentUser?.email else { return }
-
-        let query = dataBase.collection("users")
-            .whereField("email", isNotEqualTo: email)
-
-        query.getDocuments { snapshot, error in
-            DispatchQueue.main.async {
-                guard let snapshot = snapshot else { return }
-                let chatListModel = snapshot.documents.compactMap { document -> FriendsModel? in
-                    guard let nickname = document.data()["nickname"] as? String else { return nil }
-                    guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
-                    return FriendsModel(id: document.documentID, nickname: nickname, avatarURL: avatarURL) 
-                }
-                completion(chatListModel)
-            }
-        }
-    }
+enum FriendsServiceError: Error {
+    case userNotLoggedIn
+    case failedToRetrieveData
+    case errorUid
 }
 
-
-
-
+final class FriendsService {
+    
+    //MARK: - Inits
+    private let database = Firestore.firestore()
+    private let auth = Auth.auth()
+    
+    //MARK: - Public Methods
+    ///get a list of "friends"
+    public func getFriendsList() async throws -> [DTO] {
+        guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
+        let currentUserRef = database.collection("users").document(currentUserId)
+        let currentUserData = try await currentUserRef.getDocument()
+        guard let friendIds = currentUserData.data()?["friends"] as? [String], !friendIds.isEmpty else { return [] }
+        
+        let query = database.collection("users")
+            .whereField("id", in: friendIds)
+        
+        do {
+            let snapshot = try await query.getDocuments()
+            let friends = snapshot.documents.compactMap { document -> DTO? in
+                guard let nickname = document.data()["nickname"] as? String else { return nil }
+                guard let avatarUrl = document.data()["avatarURL"] as? String else { return nil }
+                return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarUrl)
+            }
+            return friends
+        } catch {
+            throw FriendsServiceError.failedToRetrieveData
+        }
+    }
+    
+    ///removing from "friends"
+    public func deleteFriends(friendID: String) async throws {
+        guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
+        let currentUserRef = database.collection("users").document(currentUserId)
+        try await currentUserRef.updateData([
+            "friends": FieldValue.arrayRemove([friendID])
+        ])
+        
+        let friendRef = database.collection("users").document(friendID)
+            try await friendRef.updateData([
+                "friends": FieldValue.arrayRemove([currentUserId])
+            ])
+    }
+}

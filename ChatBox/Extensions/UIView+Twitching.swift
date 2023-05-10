@@ -9,10 +9,10 @@ import UIKit
  
 extension UIView {
     
-    func twitching(duration: Double) {
+    func twitching() {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
-        animation.duration = duration
+        animation.duration = 0.5
         animation.values = [-5, 5, -5, 5, 0]
         layer.add(animation, forKey: "twitch")
     }
