@@ -20,6 +20,12 @@ final class AuthViewController: UIViewController {
     lazy var service = AuthService()
     lazy var checkFields = CheckFields()
     var userDefault = UserDefaults.standard
+    
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        emailTextField.autocorrectionType = .no
+    }
 
     //MARK: - IBActions
     @IBAction func closeAuthAction(_ sender: Any) {
@@ -35,20 +41,16 @@ final class AuthViewController: UIViewController {
             await loginChat()
         }
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        emailTextField.autocorrectionType = .no
-    }
         
-    //MARK: - Methods
-    //скрытие клавиатуры по тапу
+    //MARK: - override methods
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
 }
 
+//MARK: - Private Exntension
 private extension AuthViewController {
+    ///authorization verification and authorization
     private func loginChat() async {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
@@ -104,12 +106,14 @@ private extension AuthViewController {
         }
     }
     
+    ///hiding the loading indicator
     private func hideHud() {
         DispatchQueue.main.async {
             MBProgressHUD.hide(for: self.view, animated: true)
         }
     }
     
+    ///alert about an unconfirmed email address
     private func showAlert() {
         Task { @MainActor in
             let title = "Активация"

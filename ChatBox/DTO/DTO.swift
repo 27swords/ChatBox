@@ -7,6 +7,7 @@
 
 import Foundation
 
+///user parameters
 struct DTO {
     var id: String
     var email: String

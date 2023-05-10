@@ -42,6 +42,7 @@ final class StartViewController: UIViewController {
 //MARK: - extension StartViewControllerDelegate
 extension StartViewController: StartViewControllerDelegate {
     
+    ///transition animation
     func fadeAnimation() {
         let transition = CATransition()
         transition.duration = 0.2
@@ -49,16 +50,19 @@ extension StartViewController: StartViewControllerDelegate {
         self.view.window?.layer.add(transition, forKey: kCATransition)
     }
     
+    ///opening the registration View
     func openRegisterVC() {
         fadeAnimation()
         self.view.addSubview(registerVC.view)
     }
     
+    ///openinng the auth View
     func openAuthVC() {
         fadeAnimation()
         self.view.addSubview(authVC.view)
     }
     
+    ///auth in chat
     func openChat() {
         let tabBarVC = TabBarViewController()
 
@@ -69,6 +73,7 @@ extension StartViewController: StartViewControllerDelegate {
         window.rootViewController = tabBarVC
     }
 
+    ///exit from view
     func closeVC() {
         fadeAnimation()
         authVC.view.removeFromSuperview()

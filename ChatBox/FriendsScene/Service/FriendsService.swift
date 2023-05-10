@@ -17,9 +17,12 @@ enum FriendsServiceError: Error {
 
 final class FriendsService {
     
+    //MARK: - Inits
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
     
+    //MARK: - Public Methods
+    ///get a list of "friends"
     public func getFriendsList() async throws -> [DTO] {
         guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
         let currentUserRef = database.collection("users").document(currentUserId)
@@ -42,6 +45,7 @@ final class FriendsService {
         }
     }
     
+    ///removing from "friends"
     public func deleteFriends(friendID: String) async throws {
         guard let currentUserId = auth.currentUser?.uid else { throw FriendsServiceError.userNotLoggedIn }
         let currentUserRef = database.collection("users").document(currentUserId)

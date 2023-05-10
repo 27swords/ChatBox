@@ -12,15 +12,16 @@ final class ChatListViewController: UIViewController {
     //MARK: - Outlet
     @IBOutlet weak var tableView: UITableView!
     
+    //MARK: - Views
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         return refreshControl
     }()
     
-    //MARK: - Propierties
+    //MARK: - Inits
     lazy var service = ChatListService()
-    var chats = [Conversation]()
+    var chats = [ChatListModel]()
 
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -112,6 +113,7 @@ private extension ChatListViewController {
         do {
             let chats = try await service.getConversations()
             self.chats = chats
+            self.chats.sort(by: { $0.date > $1.date })
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()

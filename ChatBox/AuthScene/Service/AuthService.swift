@@ -17,9 +17,12 @@ enum AuthResponse {
 
 final class AuthService {
     
+    //MARK: - Inits
     private let auth = Auth.auth()
     private let configEmail = RegisterService()
     
+    //MARK: - public methods
+    ///authorization in the application
     public func authInApp(_ data: DTO) async throws -> AuthResponse {
         do {
             let result = try await auth.signIn(withEmail: data.email, password: data.password)

@@ -1,60 +1,61 @@
 //
-//  SearchFiendsViewController.swift
+//  SearchUserViewController.swift
 //  ChatBox
 //
 //  Created by Alexander Chervoncev on 27/4/2023.
 //
 
 import UIKit
+import SDWebImage
 
-final class SearchFiendsViewController: UIViewController {
-
-    //MARK: - Outlets
+final class SearchUserViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
-    //MARK: - Propierties
-    lazy var service = SearchFriendsService()
-    var friend = [DTO]()
+    //MARK: - Inits
+    lazy var service = SearchUserService()
+    var users = [DTO]()
     
-    //MARK: - Life Cycle
+    //MARK: - Outlets
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupSearchBar()
         
         Task { @MainActor in
-            await getFriend()
+            await getUsers()
         }
     }
     
-    //MARK: - Objc methods
+    //MARK: - @objc methods
     @objc private func dissmissSelf() {
         dismiss(animated: true, completion: nil)
     }
 }
 
-//MARK: - Extension UITableViewDelegate
-extension SearchFiendsViewController: UITableViewDelegate, UITableViewDataSource {
+//MARK: - Extension UITableViewDelegate, UITableViewDataSource
+extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friend.count
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SearchFiendsTableViewCell.self), for: indexPath) as? SearchFiendsTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SearchUsersTableViewCell.self), for: indexPath) as? SearchUsersTableViewCell
         else {
             return UITableViewCell()
         }
-        
-        let friendCell = friend[indexPath.row]
+        let usersCell = users[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: friendCell.avatarURL ?? "")
+            cell.configureImagecell(items: usersCell.avatarURL ?? "")
             
             DispatchQueue.main.async {
-                cell.cunfigureTextCell(users: friendCell.nickname)
-                cell.friend = friendCell
+                cell.configureTextCell(items: usersCell)
+                cell.users = usersCell
             }
         }
         return cell
@@ -62,20 +63,20 @@ extension SearchFiendsViewController: UITableViewDelegate, UITableViewDataSource
 }
 
 //MARK: - Extension UISearchBarDelegate
-extension SearchFiendsViewController: UISearchBarDelegate {
+extension SearchUserViewController: UISearchBarDelegate {
     
 }
 
-//MARK: - Private Exntension
-private extension SearchFiendsViewController {
-    func setupTableView() {
+//MARK: - Private Extension
+private extension SearchUserViewController {
+    private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UINib(nibName: String(describing: SearchFiendsTableViewCell.self), bundle: nil),
-                           forCellReuseIdentifier: String(describing: SearchFiendsTableViewCell.self))
+        tableView.register(UINib(nibName: String(describing: SearchUsersTableViewCell.self), bundle: nil),
+                                   forCellReuseIdentifier: String(describing: SearchUsersTableViewCell.self))
     }
     
-    func setupSearchBar() {
+    private func setupSearchBar() {
         searchBar.delegate = self
         searchBar.becomeFirstResponder()
         navigationController?.navigationBar.topItem?.titleView = searchBar
@@ -85,16 +86,16 @@ private extension SearchFiendsViewController {
                                                             action: #selector(dissmissSelf))
     }
     
-    private func getFriend() async {
+    private func getUsers() async {
         do {
-            let friends = try await service.getFriendsList()
-            self.friend = friends
+            let user = try await service.getUsersList()
+            self.users = user
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         } catch {
-            print("error", error.localizedDescription)
+            print("Error getUsers", error.localizedDescription)
         }
     }
 }

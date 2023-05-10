@@ -13,6 +13,8 @@ class ChatListTableViewCell: UITableViewCell {
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,9 +32,13 @@ class ChatListTableViewCell: UITableViewCell {
         
     }
     
-    func configureChatListCell(items: Conversation) {
+    func configureChatListCell(items: ChatListModel) {
         nameLabel.text = items.nickname
         messageLabel.text = items.lastMessage
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm"
+        dateLabel.text = dateFormatter.string(from: items.date as Date)
     }
     
     func cunfigureImageCell(users: String) {

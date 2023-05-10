@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchFiendsViewController" customModule="ChatBox" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchUserViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
-                <outlet property="searchBar" destination="0rL-2b-MRZ" id="XTR-Pk-dR7"/>
-                <outlet property="tableView" destination="L6h-9y-j0z" id="Zpe-E1-bDh"/>
+                <outlet property="searchBar" destination="fB4-5F-QtC" id="A9P-wj-6W7"/>
+                <outlet property="tableView" destination="BK9-CE-ZJu" id="JHe-ru-WKh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,15 +20,15 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="L6h-9y-j0z">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="BK9-CE-ZJu">
                     <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Поиск" id="0rL-2b-MRZ">
+                    <searchBar key="tableHeaderView" contentMode="redraw" id="fB4-5F-QtC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <textInputTraits key="textInputTraits"/>
                         <connections>
-                            <outlet property="delegate" destination="-1" id="7mc-Th-Knr"/>
+                            <outlet property="delegate" destination="-1" id="who-V2-hqa"/>
                         </connections>
                     </searchBar>
                 </tableView>
@@ -36,12 +36,12 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="L6h-9y-j0z" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="2TC-Of-AKs"/>
-                <constraint firstItem="L6h-9y-j0z" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="My2-09-IYa"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="L6h-9y-j0z" secondAttribute="trailing" id="WMf-sa-PhP"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="L6h-9y-j0z" secondAttribute="bottom" id="dod-kH-Cyz"/>
+                <constraint firstItem="BK9-CE-ZJu" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="5hJ-AN-O5O"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BK9-CE-ZJu" secondAttribute="bottom" id="7Lt-4N-gKH"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="BK9-CE-ZJu" secondAttribute="trailing" id="awI-4p-SiX"/>
+                <constraint firstItem="BK9-CE-ZJu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="eKQ-qU-VqV"/>
             </constraints>
-            <point key="canvasLocation" x="131" y="-12"/>
+            <point key="canvasLocation" x="140" y="20"/>
         </view>
     </objects>
     <resources>

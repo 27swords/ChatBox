@@ -9,8 +9,8 @@ import UIKit
 
 extension UIView {
     
-    // Создание круглой иконки
-    func makeRounded() {
+    /// Creating a round image
+    public func makeRounded() {
         layer.borderWidth = 1
         layer.masksToBounds = false
         layer.borderColor = UIColor.clear.cgColor

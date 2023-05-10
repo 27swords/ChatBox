@@ -1,5 +1,5 @@
 //
-//  UserService.swift
+//  ProfileService.swift
 //  ChatBox
 //
 //  Created by Alexander Chervoncev on 20/4/2023.
@@ -10,20 +10,22 @@ import Firebase
 import FirebaseFirestore
 import FirebaseStorage
 
-enum UserServiceError: Error {
+enum ProfileServiceError: Error {
     case userNotLoggedIn
     case failedToRetrieveData
     case failedToUploadAvatar
 }
 
-final class UserService {
+final class ProfileService {
     
+    //MARK: - Inits
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
     
-    //MARK: - UserGet methods
-    public func userInfo() async throws -> [DTO] {
-        guard let email = auth.currentUser?.email else { throw UserServiceError.userNotLoggedIn }
+    //MARK: - Public Methods
+    
+    public func profileGet() async throws -> [DTO] {
+        guard let email = auth.currentUser?.email else { throw ProfileServiceError.userNotLoggedIn }
         
         let query = database.collection("users")
             .whereField("email", isEqualTo: email)
@@ -37,19 +39,18 @@ final class UserService {
             }
             return user
         } catch {
-            throw UserServiceError.failedToRetrieveData
+            throw ProfileServiceError.failedToRetrieveData
         }
     }
     
-    // MARK: - update/upload photos
     /// Save an image to Firebase Storage and return its download URL
     public func uploadAvatar(image: UIImage) async throws -> URL {
         guard let currentUserId = auth.currentUser?.uid else {
-            throw UserServiceError.userNotLoggedIn
+            throw ProfileServiceError.userNotLoggedIn
         }
         
         guard let imageData = image.jpegData(compressionQuality: 0.4) else {
-            throw UserServiceError.userNotLoggedIn
+            throw ProfileServiceError.userNotLoggedIn
         }
         
         let storageRef = Storage.storage().reference()
@@ -77,7 +78,7 @@ final class UserService {
     /// Update the user's profile with the given avatar URL
     public func updateUserProfile(avatarURL: URL) async throws {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
-            throw UserServiceError.userNotLoggedIn
+            throw ProfileServiceError.userNotLoggedIn
         }
         
         let userRef = Firestore.firestore().collection("users").document(currentUserId)

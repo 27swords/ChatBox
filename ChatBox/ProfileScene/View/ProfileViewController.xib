@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserViewController" customModule="ChatBox" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
                 <outlet property="avatarImageView" destination="YO7-gX-uiA" id="MU8-Le-oQ0"/>
                 <outlet property="editPhotoButton" destination="KuI-Ku-jsS" id="UDj-DV-fCT"/>
@@ -63,7 +63,7 @@
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Выйти из аккаунта"/>
                             <connections>
-                                <action selector="logOutAction:" destination="-1" eventType="touchUpInside" id="PGx-ls-SCR"/>
+                                <action selector="logOutAction:" destination="-1" eventType="touchUpInside" id="qqo-e5-WZa"/>
                             </connections>
                         </button>
                     </subviews>

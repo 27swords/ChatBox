@@ -9,6 +9,7 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
 
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
@@ -16,17 +17,21 @@ final class TabBarViewController: UITabBarController {
     }
 }
 
+//MARK: - Private Extension
 private extension TabBarViewController {
+    
+    ///tabBar configuration
     func setupTabBar() {
         tabBar.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         tabBar.backgroundColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 0.9999999404, alpha: 1)
         tabBar.unselectedItemTintColor = .gray
     }
     
+    ///setting up cells in tabbar
     func makeTabItems() {
         let friends = FriendsViewController()
         let chatList = ChatListViewController()
-        let user = UserViewController()
+        let user = ProfileViewController()
         
         guard let friendsIcon = UIImage(systemName: "person.2") else { return }
         guard let chatListIcon = UIImage(systemName: "message") else { return }
@@ -39,6 +44,7 @@ private extension TabBarViewController {
         viewControllers = [friendsScene, chatListScene, userScene]
     }
     
+    ///creating a navigationcontroller
     func createNavController(for rootViewController: UIViewController,
                              title: String,
                              image: UIImage?)

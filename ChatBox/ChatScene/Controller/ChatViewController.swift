@@ -87,7 +87,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 //MARK: - Private Extension
 private extension ChatViewController {
     
-    //create CollectionView
+    ///create CollectionView
     private func setupMessageCollectionView() {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self

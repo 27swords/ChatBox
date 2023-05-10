@@ -48,7 +48,7 @@ final class FriendsViewController: UIViewController {
     }
     
     @objc private func didtapComposeButton() {
-        let vc = SearchFiendsViewController()
+        let vc = SearchUserViewController()
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
     }
@@ -78,6 +78,15 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         return cell
+    }
+    
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        let letters = Set(friend.compactMap { $0.nickname.first?.uppercased() })
+        return letters.sorted()
+    }
+    
+    func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+        return friend.firstIndex { $0.nickname.hasPrefix(title) } ?? 0
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -130,10 +139,11 @@ private extension FriendsViewController {
         )
     }
     
+    ///display a list of friends in the view
     private func getFriend() async {
         do {
             let friends = try await service.getFriendsList()
-            self.friend = friends
+            self.friend = friends.sorted(by: { $0.nickname < $1.nickname })
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()

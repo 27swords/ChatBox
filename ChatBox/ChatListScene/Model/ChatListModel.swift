@@ -7,4 +7,10 @@
 
 import UIKit
 
-
+struct ChatListModel {
+    let otherId: String
+    let lastMessage: String
+    let nickname: String
+    let date: Date
+    let avatarUrl: String?
+}

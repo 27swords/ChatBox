@@ -24,7 +24,7 @@ final class RegisterViewController: UIViewController {
     lazy var checkFields = CheckFields()
     lazy var service = RegisterService()
         
-    //MARK: - Actions
+    //MARK: - IBAction
     @IBAction func closeRegisterAction(_ sender: Any) {
         delegate?.closeVC()
         hiddingOutlets()
@@ -44,7 +44,6 @@ final class RegisterViewController: UIViewController {
     }
     
     //MARK: - Methods
-    //Скрытие клавиатуры при нажатии на пустое пространство
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
@@ -53,7 +52,7 @@ final class RegisterViewController: UIViewController {
 //MARK: - Private Extension
 private extension RegisterViewController {
 
-    // Регистрация пользователя и проверка входных данных
+    //User registration and verification of input data
     private func createUser() async {
         guard let email = emailTextField.text else { return }
         guard let nickName = nicknameTextField.text else { return }
@@ -128,12 +127,14 @@ private extension RegisterViewController {
         }
     }
     
+    ///hiding the loading indicator
     private func hideHud() {
         DispatchQueue.main.async {
             MBProgressHUD.hide(for: self.view, animated: true)
         }
     }
     
+    ///clearing all fields and labels after exiting the view
     private func hiddingOutlets() {
         emailTextField.text = nil
         nicknameTextField.text = nil
@@ -146,7 +147,7 @@ private extension RegisterViewController {
     }
     
     
-    
+    ///alert about successful registration
     private func showAlert() {
         Task { @MainActor in
             let title = "Активация"
@@ -158,10 +159,11 @@ private extension RegisterViewController {
         }
     }
     
+    ///alert of registration error
     private func showErrorAlert() {
         Task { @MainActor in
             let title = "Ошибка"
-            let message = "Проверьте ваше подключение к сети"
+            let message = "Неизвестная ошибка"
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             let alertButton = UIAlertAction(title: "OK", style: .cancel)
             alert.addAction(alertButton)

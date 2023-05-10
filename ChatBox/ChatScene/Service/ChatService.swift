@@ -13,92 +13,46 @@ enum ChatServiceError: Error {
     case noCurrentUser
     case invalidData
     case failedToRetrieveData
+    case failedToDeleteData
 }
 
 final class ChatService {
     
+    //MARK: - Inits
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
-        
+    
+    //MARK: - Public methods
+    ///sending a message to the user or creating a new chat if the dialog does not exist
     public func sendMessage(otherId: String?, conversationId: String?, text: String) async throws -> String {
         guard let uid = auth.currentUser?.uid else { throw ChatServiceError.noCurrentUser }
-
+        
         let messageData: [String: Any] = [
             "date": Date(),
             "sender": uid,
             "text": text
         ]
-
+        
         if let convoId = conversationId {
-            let messageRef = database.collection("conversations").document(convoId).collection("messages").document()
-            try await messageRef.setData(messageData)
-
-            let convoRef = database.collection("conversations").document(convoId)
-            var convoData = try await convoRef.getDocument().data() ?? [:]
-            convoData["lastMessage"] = messageData
-            try await convoRef.setData(convoData)
+            try await sendMessageToExistingConversation(convoId: convoId, messageData: messageData)
             return convoId
         } else {
             guard let otherId = otherId else {
                 throw ChatServiceError.invalidData
             }
-
             do {
                 let convoId = try await getConversationsId(otherId: otherId)
-
-                let messageRef = database.collection("conversations").document(convoId).collection("messages").document()
-                try await messageRef.setData(messageData)
+                try await sendMessageToExistingConversation(convoId: convoId, messageData: messageData)
                 return convoId
             } catch {
                 let convoId = UUID().uuidString
-
-                let selfConversationData: [String: Any] = [
-                    "date": Date(),
-                    "otherId": otherId
-                ]
-
-                let otherConversationData: [String: Any] = [
-                    "date": Date(),
-                    "otherId": uid
-                ]
-
-                // Get user data for both users
-                let usersRef = database.collection("users")
-                let selfUser = try await usersRef.document(uid).getDocument().data()
-                let otherUser = try await usersRef.document(otherId).getDocument().data()
-
-                // Get the nicknames of both users
-                let selfNickname = selfUser?["nickname"] as? String ?? ""
-                let otherNickname = otherUser?["nickname"] as? String ?? ""
-
-
-                // Add nicknames to convoData
-                let convoData: [String: Any] = [
-                    "date": Date(),
-                    "members": [uid, otherId],
-                    "nicknames": [uid: selfNickname, otherId: otherNickname],
-                    "lastMessage": messageData
-                ]
-
-                let batch = database.batch()
-
-                let selfConversationRef = database.collection("users").document(uid).collection("conversations").document(convoId)
-                let otherConversationRef = database.collection("users").document(otherId).collection("conversations").document(convoId)
-                let convoRef = database.collection("conversations").document(convoId)
-                let messageRef = convoRef.collection("messages").document()
-
-                batch.setData(convoData, forDocument: convoRef)
-                batch.setData(selfConversationData, forDocument: selfConversationRef)
-                batch.setData(otherConversationData, forDocument: otherConversationRef)
-                batch.setData(messageData, forDocument: messageRef)
-
-                try await batch.commit()
+                try await createNewConversation(uid: uid, otherId: otherId, convoId: convoId, messageData: messageData)
                 return convoId
             }
         }
     }
-
     
+    ///This method get the ID of a conversation between the current user and another user. It queries theFirestore database to find the conversation document in the "conversations" subcollection of the current user's document, where the "otherId" field is equal to the ID of the other user.
     public func getConversationsId(otherId: String) async throws -> String {
         guard let uid = auth.currentUser?.uid else { throw ChatServiceError.noCurrentUser }
         
@@ -120,6 +74,7 @@ final class ChatService {
         }
     }
     
+    ///method retrieve all the message in a conversation identified by chat Id.
     public func getAllMessages(chatId: String, completion: @escaping ([Message]) -> Void) throws -> ListenerRegistration? {
         guard let uid = auth.currentUser?.uid else { throw ChatServiceError.invalidData }
 
@@ -157,6 +112,62 @@ final class ChatService {
         }
 
         return listener
+    }
+    
+    //MARK: - Private methods
+    ///adds the message to the specified conversation and updates the last message of the conversation.
+    private func sendMessageToExistingConversation(convoId: String, messageData: [String: Any]) async throws {
+        let messageRef = database.collection("conversations").document(convoId).collection("messages").document()
+        try await messageRef.setData(messageData)
+        
+        let convoRef = database.collection("conversations").document(convoId)
+        var convoData = try await convoRef.getDocument().data() ?? [:]
+        convoData["lastMessage"] = messageData
+        try await convoRef.setData(convoData)
+    }
+    
+    /// creates a new conversation and adds the message to that conversation. It also updates the list of conversations for both users involved in the conversation.
+    private func createNewConversation(uid: String, otherId: String, convoId: String, messageData: [String: Any]) async throws {
+        let selfConversationData: [String: Any] = [
+            "date": Date(),
+            "otherId": otherId
+        ]
+        
+        let otherConversationData: [String: Any] = [
+            "date": Date(),
+            "otherId": uid
+        ]
+        
+        // Get user data for both users
+        let usersRef = database.collection("users")
+        let selfUser = try await usersRef.document(uid).getDocument().data()
+        let otherUser = try await usersRef.document(otherId).getDocument().data()
+        
+        // Get the nicknames of both users
+        let selfNickname = selfUser?["nickname"] as? String ?? ""
+        let otherNickname = otherUser?["nickname"] as? String ?? ""
+        
+        // Add nicknames to convoData
+        let convoData: [String: Any] = [
+            "date": Date(),
+            "members": [uid, otherId],
+            "nicknames": [uid: selfNickname, otherId: otherNickname],
+            "lastMessage": messageData
+        ]
+        
+        let batch = database.batch()
+        
+        let selfConversationRef = database.collection("users").document(uid).collection("conversations").document(convoId)
+        let otherConversationRef = database.collection("users").document(otherId).collection("conversations").document(convoId)
+        let convoRef = database.collection("conversations").document(convoId)
+        let messageRef = convoRef.collection("messages").document()
+        
+        batch.setData(convoData, forDocument: convoRef)
+        batch.setData(selfConversationData, forDocument: selfConversationRef)
+        batch.setData(otherConversationData, forDocument: otherConversationRef)
+        batch.setData(messageData, forDocument: messageRef)
+        
+        try await batch.commit()
     }
 }
 

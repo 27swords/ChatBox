@@ -1,5 +1,5 @@
 //
-//  UserViewController.swift
+//  ProfileViewController.swift
 //  ChatBox
 //
 //  Created by Alexander Chervoncev on 28/3/2023.
@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import PhotosUI
 
-final class UserViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     
     //MARK: - Outlets
     @IBOutlet weak var avatarImageView: UIImageView!
@@ -18,8 +18,8 @@ final class UserViewController: UIViewController {
     @IBOutlet weak var editPhotoButton: UIButton!
         
     //MARK: - Inits
-    lazy var service = UserService()
-    lazy var user = [DTO]()
+    lazy var service = ProfileService()
+    lazy var profile = [DTO]()
     var userDefault = UserDefaults.standard
     
     //MARK: - IBAction
@@ -35,7 +35,7 @@ final class UserViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Task { @MainActor in
-            await userInfoGet()
+            await profileGet()
         }
     }
     
@@ -47,7 +47,7 @@ final class UserViewController: UIViewController {
 }
 
 //MARK: - Extension UIImagePicker
-extension UserViewController: PHPickerViewControllerDelegate {
+extension ProfileViewController: PHPickerViewControllerDelegate {
     
     func presentPhotoActionSheet() {
         let actionSheet = UIAlertController(title: nil,
@@ -113,7 +113,7 @@ extension UserViewController: PHPickerViewControllerDelegate {
 }
 
 //MARK: - Private Extension
-private extension UserViewController {
+private extension ProfileViewController {
     
     private func updateUI(user: DTO) {
         DispatchQueue.global(qos: .userInteractive).async {
@@ -126,18 +126,17 @@ private extension UserViewController {
         }
     }
     
-    private func userInfoGet() async {
+    private func profileGet() async {
         do {
-            user = try await service.userInfo()
-            if let user = user.first {
-                updateUI(user: user)
+            profile = try await service.profileGet()
+            if let profile = profile.first {
+                updateUI(user: profile)
             }
         } catch {
-            
+            print("Error profileGet", error.localizedDescription)
         }
     }
 
-    // выход из аккаунта
     private func logOutAcount() {
         do {
             try Auth.auth().signOut()

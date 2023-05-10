@@ -20,10 +20,12 @@ enum RegisterResponse {
 
 final class RegisterService {
     
+    //MARK: - Inits
     private let database = Firestore.firestore()
     private let auth = Auth.auth()
     
     //MARK: - Registration methods
+    ///registering a new user
     public func createNewUser(_ data: DTO, completion: @escaping (RegisterResponse) -> Void) async {
         
         do {
@@ -33,7 +35,7 @@ final class RegisterService {
                 return
             }
             
-            let nicknameBusy = await isNicknameBusu(data.nickname)
+            let nicknameBusy = await isUsernameBusu(data.nickname)
             if nicknameBusy  {
                 completion(.nicknameAlreadyInUse)
                 return
@@ -48,18 +50,21 @@ final class RegisterService {
         }
     }
     
+    ///checking whether mail exists in the database
     private func isEmailBusy(_ email: String) async throws -> Bool {
         let signInMethods = try await auth.fetchSignInMethods(forEmail: email)
         return !signInMethods.isEmpty
     }
     
-    private func isNicknameBusu(_ nickname: String) async -> Bool {
+    ///checking whether the user name exists in the database
+    private func isUsernameBusu(_ nickname: String) async -> Bool {
         let querySnapshot = try? await database.collection("users")
             .whereField("nickname", isEqualTo: nickname)
             .getDocuments()
         return querySnapshot?.documents.count ?? 0 > 0
     }
     
+    ///registering a new user
     private func createUser(_ email: String, _ password: String, _ nickname: String, _ avatarURL: String?) async throws -> AuthDataResult {
         let authResult = try await auth.createUser(withEmail: email, password: password)
         let changeRequest = authResult.user.createProfileChangeRequest()
@@ -75,11 +80,13 @@ final class RegisterService {
         return authResult
     }
     
+    ///sending a confirmation email after successful registration
     private func sendEmailVerifiCation(_ authResult: AuthDataResult) async throws {
         try await authResult.user.sendEmailVerification()
         configEmail()
     }
     
+    ///checking whether the user has confirmed their email address
     public func configEmail() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.auth.currentUser?.sendEmailVerification(completion: { error in
