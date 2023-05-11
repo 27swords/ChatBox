@@ -78,10 +78,10 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="avatarImageView" destination="3QZ-h0-yQQ" id="cgA-6s-Ghc"/>
                 <outlet property="dateLabel" destination="a0s-u9-iel" id="JTe-KC-udQ"/>
                 <outlet property="messageLabel" destination="90y-xg-oI1" id="dt7-bT-lcC"/>
                 <outlet property="nameLabel" destination="JcJ-y9-2uq" id="oYE-JZ-GFS"/>
+                <outlet property="userIconImageView" destination="3QZ-h0-yQQ" id="JBg-XN-Sw5"/>
             </connections>
             <point key="canvasLocation" x="131.29770992366412" y="1.4084507042253522"/>
         </tableViewCell>

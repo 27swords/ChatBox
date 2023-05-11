@@ -138,20 +138,17 @@ final class ChatService {
             "otherId": uid
         ]
         
-        // Get user data for both users
         let usersRef = database.collection("users")
         let selfUser = try await usersRef.document(uid).getDocument().data()
         let otherUser = try await usersRef.document(otherId).getDocument().data()
         
-        // Get the nicknames of both users
-        let selfNickname = selfUser?["nickname"] as? String ?? ""
-        let otherNickname = otherUser?["nickname"] as? String ?? ""
+        let selfUsername = selfUser?["username"] as? String ?? ""
+        let otherUsername = otherUser?["username"] as? String ?? ""
         
-        // Add nicknames to convoData
         let convoData: [String: Any] = [
             "date": Date(),
             "members": [uid, otherId],
-            "nicknames": [uid: selfNickname, otherId: otherNickname],
+            "usernames": [uid: selfUsername, otherId: otherUsername],
             "lastMessage": messageData
         ]
         

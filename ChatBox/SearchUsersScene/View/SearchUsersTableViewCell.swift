@@ -33,7 +33,7 @@ final class SearchUsersTableViewCell: UITableViewCell {
     }
     
     func configureTextCell(items: DTO) {
-        usernameLabel.text = items.nickname
+        usernameLabel.text = items.username
     }
     
     func configureImagecell(items: String) {

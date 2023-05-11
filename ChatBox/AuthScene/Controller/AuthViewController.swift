@@ -54,7 +54,7 @@ private extension AuthViewController {
     private func loginChat() async {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
-        let loginField = DTO(id: "", email: email, password: password, nickname: email, avatarURL: "")
+        let loginField = DTO(id: "", email: email, password: password, username: "", userIconURL: "")
         
         if email.isEmpty && password.isEmpty  {
             print("Email or passwords is Empty")

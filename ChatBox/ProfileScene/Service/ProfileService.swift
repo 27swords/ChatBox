@@ -33,9 +33,9 @@ final class ProfileService {
         do {
             let snapshot = try await query.getDocuments()
             let user = snapshot.documents.compactMap { document -> DTO? in
-                guard let nickname = document.data()["nickname"] as? String else { return nil }
-                guard let avatarURL = document.data()["avatarURL"] as? String else { return nil }
-                return DTO(id: document.documentID, email: email, password: "", nickname: nickname, avatarURL: avatarURL)
+                guard let username = document.data()["username"] as? String else { return nil }
+                guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
+                return DTO(id: document.documentID, email: email, password: "", username: username, userIconURL: userIconURL)
             }
             return user
         } catch {
@@ -44,7 +44,7 @@ final class ProfileService {
     }
     
     /// Save an image to Firebase Storage and return its download URL
-    public func uploadAvatar(image: UIImage) async throws -> URL {
+    public func uploadUserIcon(image: UIImage) async throws -> URL {
         guard let currentUserId = auth.currentUser?.uid else {
             throw ProfileServiceError.userNotLoggedIn
         }
@@ -54,29 +54,23 @@ final class ProfileService {
         }
         
         let storageRef = Storage.storage().reference()
-        let avatarsRef = storageRef.child("avatars")
-        let userAvatarRef = avatarsRef.child(currentUserId)
+        let userIconsRef = storageRef.child("userIcons")
+        let userAvatarRef = userIconsRef.child(currentUserId)
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         
         do {
-            // Create the user's avatar folder
-            userAvatarRef.putData(Data())
-            
-            // Upload the avatar image to the user's folder
-            let avatarImageRef = userAvatarRef.child("avatar.jpg")
+            let avatarImageRef = userAvatarRef.child("userIcon.jpg")
             avatarImageRef.putData(imageData, metadata: metadata)
-            
-            // Return the download URL of the uploaded avatar image
+
             return try await avatarImageRef.downloadURL()
         } catch {
             throw error
         }
     }
 
-
     /// Update the user's profile with the given avatar URL
-    public func updateUserProfile(avatarURL: URL) async throws {
+    public func updateUserProfile(userIconURL: URL) async throws {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
             throw ProfileServiceError.userNotLoggedIn
         }
@@ -84,9 +78,8 @@ final class ProfileService {
         let userRef = Firestore.firestore().collection("users").document(currentUserId)
         
         do {
-            // Use a batched write to update the user's profile
             let batch = Firestore.firestore().batch()
-            batch.updateData(["avatarURL": avatarURL.absoluteString], forDocument: userRef)
+            batch.updateData(["userIconURL": userIconURL.absoluteString], forDocument: userRef)
             try await batch.commit()
         } catch {
             throw error

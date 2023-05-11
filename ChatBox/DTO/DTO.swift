@@ -12,6 +12,6 @@ struct DTO {
     var id: String
     var email: String
     var password: String
-    var nickname: String
-    var avatarURL: String?
+    var username: String
+    var userIconURL: String?
 }

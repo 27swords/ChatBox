@@ -16,6 +16,15 @@ extension UIView {
         animation.values = [-5, 5, -5, 5, 0]
         layer.add(animation, forKey: "twitch")
     }
+    
+    /// Creating a round view
+    public func makeRounded() {
+        layer.borderWidth = 1
+        layer.masksToBounds = false
+        layer.borderColor = UIColor.clear.cgColor
+        layer.cornerRadius = self.frame.height / 2
+        clipsToBounds = true
+    }
 }
 
 

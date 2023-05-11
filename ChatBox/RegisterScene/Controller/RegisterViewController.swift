@@ -55,11 +55,11 @@ private extension RegisterViewController {
     //User registration and verification of input data
     private func createUser() async {
         guard let email = emailTextField.text else { return }
-        guard let nickName = nicknameTextField.text else { return }
+        guard let username = nicknameTextField.text else { return }
         guard let password = passTextField.text else { return }
         guard let repPassword = repPassTextField.text else { return }
 
-        let data = DTO(id: "", email: email, password: password, nickname: nickName, avatarURL: "")
+        let data = DTO(id: "", email: email, password: password, username: username, userIconURL: "")
             
         if password.isEmpty && email.isEmpty  {
             errorEmail.text = "Поля не должны быть пустые"
@@ -115,7 +115,7 @@ private extension RegisterViewController {
                 DispatchQueue.main.async {
                     self.showErrorAlert()
                 }
-            case .nicknameAlreadyInUse:
+            case .usernameAlreadyInUse:
                 DispatchQueue.main.async {
                     self.errorNicknameLabel.text = "Имя пользователя занято"
                     self.errorNicknameLabel.twitching()

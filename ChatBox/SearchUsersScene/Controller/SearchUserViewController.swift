@@ -16,7 +16,7 @@ final class SearchUserViewController: UIViewController {
     
     //MARK: - Inits
     lazy var service = SearchUserService()
-    var users = [DTO]()
+    lazy var users = [DTO]()
     
     //MARK: - Outlets
     override func viewDidLoad() {
@@ -51,7 +51,7 @@ extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
         let usersCell = users[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.configureImagecell(items: usersCell.avatarURL ?? "")
+            cell.configureImagecell(items: usersCell.userIconURL ?? "")
             
             DispatchQueue.main.async {
                 cell.configureTextCell(items: usersCell)

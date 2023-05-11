@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49076073298A6B2500AFCF27 /* FriendsTableViewCell.swift */; };
 		49076076298A6B2500AFCF27 /* FriendsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49076074298A6B2500AFCF27 /* FriendsTableViewCell.xib */; };
-		49076079298A728400AFCF27 /* UIImageView+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49076078298A728400AFCF27 /* UIImageView+Circle.swift */; };
+		49076079298A728400AFCF27 /* UIImage+Resized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49076078298A728400AFCF27 /* UIImage+Resized.swift */; };
 		490F5CBA29D354B600B688F6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490F5CB829D354B600B688F6 /* ProfileViewController.swift */; };
 		490F5CBB29D354B600B688F6 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 490F5CB929D354B600B688F6 /* ProfileViewController.xib */; };
 		4914A7F5298527C40076F03C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914A7F4298527C40076F03C /* AppDelegate.swift */; };
@@ -89,7 +89,7 @@
 /* Begin PBXFileReference section */
 		49076073298A6B2500AFCF27 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
 		49076074298A6B2500AFCF27 /* FriendsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsTableViewCell.xib; sourceTree = "<group>"; };
-		49076078298A728400AFCF27 /* UIImageView+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Circle.swift"; sourceTree = "<group>"; };
+		49076078298A728400AFCF27 /* UIImage+Resized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resized.swift"; sourceTree = "<group>"; };
 		490F5CB829D354B600B688F6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		490F5CB929D354B600B688F6 /* ProfileViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
 		4914A7F1298527C40076F03C /* ChatBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,7 +182,7 @@
 		49076077298A727700AFCF27 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				49076078298A728400AFCF27 /* UIImageView+Circle.swift */,
+				49076078298A728400AFCF27 /* UIImage+Resized.swift */,
 				49AF61AA299AB7D000CA1DDF /* UIView+Twitching.swift */,
 			);
 			path = Extensions;
@@ -720,7 +720,7 @@
 				498D84B92989875500DF535E /* TabBarViewController.swift in Sources */,
 				49CE63AE29914FA1008D188A /* DTO.swift in Sources */,
 				49961822298A5FD6003E4AF3 /* FriendsViewController.swift in Sources */,
-				49076079298A728400AFCF27 /* UIImageView+Circle.swift in Sources */,
+				49076079298A728400AFCF27 /* UIImage+Resized.swift in Sources */,
 				49399F7129F172DC00FD4D44 /* RegisterService.swift in Sources */,
 				49D4141B29E47BA9002CD819 /* ChatListTableViewCell.swift in Sources */,
 				49076075298A6B2500AFCF27 /* FriendsTableViewCell.swift in Sources */,

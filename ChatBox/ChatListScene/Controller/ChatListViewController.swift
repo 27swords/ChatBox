@@ -21,7 +21,7 @@ final class ChatListViewController: UIViewController {
     
     //MARK: - Inits
     lazy var service = ChatListService()
-    var chats = [ChatListModel]()
+    lazy var chats = [ChatListModel]()
 
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -68,7 +68,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
         let convoCell = chats[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: convoCell.avatarUrl ?? "")
+            cell.cunfigureImageCell(users: convoCell.userIconURL ?? "")
             
             DispatchQueue.main.async {
                 cell.configureChatListCell(items: convoCell)
@@ -83,7 +83,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = ChatViewController()
     
         vc.otherID = selectedFriend.otherId
-        vc.title = selectedFriend.nickname
+        vc.title = selectedFriend.username
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
