@@ -13,7 +13,7 @@ import FirebaseStorage
 enum RegisterResponse {
     case success
     case emailAlreadyInUse
-    case nicknameAlreadyInUse
+    case usernameAlreadyInUse
     case error
     case unknownError
 }
@@ -35,13 +35,13 @@ final class RegisterService {
                 return
             }
             
-            let nicknameBusy = await isUsernameBusu(data.nickname)
+            let nicknameBusy = await isUsernameBusu(data.username)
             if nicknameBusy  {
-                completion(.nicknameAlreadyInUse)
+                completion(.usernameAlreadyInUse)
                 return
             }
             
-            let authResult = try await createUser(data.email, data.password, data.nickname, data.avatarURL)
+            let authResult = try await createUser(data.email, data.password, data.username, data.userIconURL)
             try await sendEmailVerifiCation(authResult)
             
             completion(.success)
@@ -59,22 +59,22 @@ final class RegisterService {
     ///checking whether the user name exists in the database
     private func isUsernameBusu(_ nickname: String) async -> Bool {
         let querySnapshot = try? await database.collection("users")
-            .whereField("nickname", isEqualTo: nickname)
+            .whereField("username", isEqualTo: nickname)
             .getDocuments()
         return querySnapshot?.documents.count ?? 0 > 0
     }
     
     ///registering a new user
-    private func createUser(_ email: String, _ password: String, _ nickname: String, _ avatarURL: String?) async throws -> AuthDataResult {
+    private func createUser(_ email: String, _ password: String, _ username: String, _ userIconURL: String?) async throws -> AuthDataResult {
         let authResult = try await auth.createUser(withEmail: email, password: password)
         let changeRequest = authResult.user.createProfileChangeRequest()
-        changeRequest.displayName = nickname
+        changeRequest.displayName = username
         
-        if let avatarURL = avatarURL {
-            changeRequest.photoURL = URL(string: avatarURL)
+        if let userIconURL = userIconURL {
+            changeRequest.photoURL = URL(string: userIconURL)
         }
         try await changeRequest.commitChanges()
-        let data: [String: Any] = ["id": authResult.user.uid, "email": email, "nickname": nickname, "avatarURL": avatarURL ?? "",]
+        let data: [String: Any] = ["id": authResult.user.uid, "email": email, "username": username, "userIconURL": userIconURL ?? "",]
         try await database.collection("users").document(authResult.user.uid).setData(data)
         
         return authResult

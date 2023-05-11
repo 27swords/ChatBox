@@ -32,9 +32,9 @@ final class SearchUserService {
         do {
             let snapshot = try await query.getDocuments()
             let users = snapshot.documents.compactMap { document -> DTO? in
-                guard let userIcon = document.data()["avatarURL"] as? String else { return nil }
-                guard let username = document.data()["nickname"] as? String else { return nil }
-                return DTO(id: document.documentID, email: "", password: "", nickname: username, avatarURL: userIcon)
+                guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
+                guard let username = document.data()["username"] as? String else { return nil }
+                return DTO(id: document.documentID, email: "", password: "", username: username, userIconURL: userIconURL)
             }
             return users
         } catch {

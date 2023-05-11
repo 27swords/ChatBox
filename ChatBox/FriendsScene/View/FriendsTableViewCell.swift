@@ -12,7 +12,7 @@ final class FriendsTableViewCell: UITableViewCell {
 
     //MARK: - Oultelts
     @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var userIconImageView: UIImageView!
     
     
     //MARK: - LifeCycle
@@ -26,7 +26,7 @@ final class FriendsTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        avatarImage.makeRounded()
+        userIconImageView.makeRounded()
     }
     
     //MARK: - Methods
@@ -35,6 +35,6 @@ final class FriendsTableViewCell: UITableViewCell {
     }
     
     func cunfigureImageCell(users: String) {
-        avatarImage.sd_setImage(with: URL(string: users))
+        userIconImageView.sd_setImage(with: URL(string: users))
     }
 }

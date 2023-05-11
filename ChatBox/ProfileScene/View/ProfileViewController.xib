@@ -10,9 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="ChatBox" customModuleProvider="target">
             <connections>
-                <outlet property="avatarImageView" destination="YO7-gX-uiA" id="MU8-Le-oQ0"/>
                 <outlet property="editPhotoButton" destination="KuI-Ku-jsS" id="UDj-DV-fCT"/>
                 <outlet property="emailLabel" destination="fwt-aZ-CmB" id="1Cr-EL-GqH"/>
+                <outlet property="imageIconImageView" destination="YO7-gX-uiA" id="gNn-Hv-7Uf"/>
                 <outlet property="nicknameLabel" destination="Twf-Ne-jHm" id="wDq-si-UCQ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

@@ -35,9 +35,9 @@ final class FriendsService {
         do {
             let snapshot = try await query.getDocuments()
             let friends = snapshot.documents.compactMap { document -> DTO? in
-                guard let nickname = document.data()["nickname"] as? String else { return nil }
-                guard let avatarUrl = document.data()["avatarURL"] as? String else { return nil }
-                return DTO(id: document.documentID, email: "", password: "", nickname: nickname, avatarURL: avatarUrl)
+                guard let username = document.data()["username"] as? String else { return nil }
+                guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
+                return DTO(id: document.documentID, email: "", password: "", username: username, userIconURL: userIconURL)
             }
             return friends
         } catch {

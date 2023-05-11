@@ -9,15 +9,14 @@ import UIKit
 import MessageKit
 import InputBarAccessoryView
 import Firebase
-import FirebaseFirestore
 
 final class ChatViewController: MessagesViewController {
     
     //MARK: - Inits
     var chatID: String?
     var otherID: String?
-    var messages = [Message]()
-    let chatService = ChatService()
+    lazy var messages = [Message]()
+    lazy var chatService = ChatService()
     let selfSender = Sender(senderId: "1", displayName: "", photoURL: "")
     private var listener: ListenerRegistration?
     
@@ -87,7 +86,6 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 //MARK: - Private Extension
 private extension ChatViewController {
     
-    ///create CollectionView
     private func setupMessageCollectionView() {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -97,6 +95,13 @@ private extension ChatViewController {
     
     private func setupSendButton() {
         messageInputBar.delegate = self
+        messageInputBar.inputTextView.placeholder = "Сообщение..."
+        
+        let sendButtonImage = UIImage(systemName: "paperplane")?.resized(to: CGSize(width: 30, height: 30))
+        let sendButton = messageInputBar.sendButton
+        sendButton.setImage(sendButtonImage, for: .normal)
+        sendButton.setTitle("", for: .normal)
+        sendButton.imageView?.contentMode = .center
     }
     
     private func searchChat() async {
@@ -117,6 +122,7 @@ private extension ChatViewController {
                 guard let self = self else { return }
                 self.messages = messages
                 self.messagesCollectionView.reloadDataAndKeepOffset()
+                self.messagesCollectionView.scrollToLastItem(animated: false)
             }
         } catch {
             print("Error fetching messages: \(error.localizedDescription)")

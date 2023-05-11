@@ -10,7 +10,7 @@ import SDWebImage
 
 class ChatListTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var userIconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -28,12 +28,12 @@ class ChatListTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        avatarImageView.makeRounded()
+        userIconImageView.makeRounded()
         
     }
     
     func configureChatListCell(items: ChatListModel) {
-        nameLabel.text = items.nickname
+        nameLabel.text = items.username
         messageLabel.text = items.lastMessage
         
         let dateFormatter = DateFormatter()
@@ -42,6 +42,6 @@ class ChatListTableViewCell: UITableViewCell {
     }
     
     func cunfigureImageCell(users: String) {
-        avatarImageView.sd_setImage(with: URL(string: users))
+        userIconImageView.sd_setImage(with: URL(string: users))
     }
 }

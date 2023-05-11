@@ -12,7 +12,7 @@ import PhotosUI
 final class ProfileViewController: UIViewController {
     
     //MARK: - Outlets
-    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var imageIconImageView: UIImageView!
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var editPhotoButton: UIButton!
@@ -41,7 +41,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        avatarImageView.makeRounded()
+        imageIconImageView.makeRounded()
         navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
@@ -97,10 +97,10 @@ extension ProfileViewController: PHPickerViewControllerDelegate {
                 
                 Task { @MainActor in
                     do {
-                        let url = try await self.service.uploadAvatar(image: image)
-                        try await self.service.updateUserProfile(avatarURL: url)
+                        let url = try await self.service.uploadUserIcon(image: image)
+                        try await self.service.updateUserProfile(userIconURL: url)
                         DispatchQueue.main.async {
-                            self.avatarImageView.image = image
+                            self.imageIconImageView.image = image
                         }
                         
                     } catch {
@@ -117,10 +117,10 @@ private extension ProfileViewController {
     
     private func updateUI(user: DTO) {
         DispatchQueue.global(qos: .userInteractive).async {
-            self.avatarImageView.sd_setImage(with: URL(string: user.avatarURL ?? ""))
+            self.imageIconImageView.sd_setImage(with: URL(string: user.userIconURL ?? ""))
             
             DispatchQueue.main.async {
-                self.nicknameLabel.text = user.nickname
+                self.nicknameLabel.text = user.username
                 self.emailLabel.text = user.email
             }
         }

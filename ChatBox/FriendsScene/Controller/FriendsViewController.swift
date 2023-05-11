@@ -24,7 +24,7 @@ final class FriendsViewController: UIViewController {
     
     //MARK: - Inits
     lazy var service = FriendsService()
-    var friend = [DTO]()
+    lazy var friend = [DTO]()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -71,22 +71,22 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         let friendCell = friend[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: friendCell.avatarURL ?? "")
+            cell.cunfigureImageCell(users: friendCell.userIconURL ?? "")
 
                 DispatchQueue.main.async {
-                    cell.cunfigureTextCell(users: friendCell.nickname)
+                    cell.cunfigureTextCell(users: friendCell.username)
                 }
             }
         return cell
     }
     
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        let letters = Set(friend.compactMap { $0.nickname.first?.uppercased() })
+        let letters = Set(friend.compactMap { $0.username.first?.uppercased() })
         return letters.sorted()
     }
     
     func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-        return friend.firstIndex { $0.nickname.hasPrefix(title) } ?? 0
+        return friend.firstIndex { $0.username.hasPrefix(title) } ?? 0
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -94,7 +94,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = ChatViewController()
     
         vc.otherID = selectedFriend.id
-        vc.title = selectedFriend.nickname
+        vc.title = selectedFriend.username
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
@@ -143,7 +143,7 @@ private extension FriendsViewController {
     private func getFriend() async {
         do {
             let friends = try await service.getFriendsList()
-            self.friend = friends.sorted(by: { $0.nickname < $1.nickname })
+            self.friend = friends.sorted(by: { $0.username < $1.username })
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()

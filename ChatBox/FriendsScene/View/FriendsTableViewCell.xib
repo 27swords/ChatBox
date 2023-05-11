@@ -60,7 +60,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="avatarImage" destination="yze-pX-CKH" id="tsk-ij-Duk"/>
+                <outlet property="userIconImageView" destination="yze-pX-CKH" id="N3X-cb-uzB"/>
                 <outlet property="userNameLabel" destination="UWb-E9-9Hf" id="HFo-xY-ek2"/>
             </connections>
             <point key="canvasLocation" x="105.34351145038167" y="73.239436619718319"/>
