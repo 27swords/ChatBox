@@ -51,11 +51,21 @@ extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
         let usersCell = users[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.configureImagecell(items: usersCell.userIconURL ?? "")
+            cell.configureImageCell(items: usersCell.userIconURL)
             
             DispatchQueue.main.async {
                 cell.configureTextCell(items: usersCell)
                 cell.users = usersCell
+            }
+            
+            Task { @MainActor in
+                do {
+                    let isSubscribed = try await self.service.checkIfUserIsSubscribed(user: usersCell)
+                    cell.isSubscribed = isSubscribed
+                    cell.updateSubscribeButtonStatus()
+                } catch {
+                    
+                }
             }
         }
         return cell

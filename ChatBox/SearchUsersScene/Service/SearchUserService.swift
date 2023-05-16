@@ -34,7 +34,12 @@ final class SearchUserService {
             let users = snapshot.documents.compactMap { document -> DTO? in
                 guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
                 guard let username = document.data()["username"] as? String else { return nil }
-                return DTO(id: document.documentID, email: "", password: "", username: username, userIconURL: userIconURL)
+                
+                let data = DTO()
+                data.id = document.documentID
+                data.username = username
+                data.userIconURL = userIconURL
+                return data
             }
             return users
         } catch {
@@ -72,5 +77,20 @@ final class SearchUserService {
         } catch {
             throw UsersServiceError.failedToRetrieveData
         }
+    }
+    
+    public func checkIfUserIsSubscribed(user: DTO) async throws -> Bool {
+        guard let currentUser = auth.currentUser else { return false }
+        let currentUserRef = database.collection("users").document(currentUser.uid)
+        do {
+            let snapshot = try await currentUserRef.getDocument()
+            let currentUserData = snapshot.data()
+            if let friends = currentUserData?["friends"] as? [String] {
+                return friends.contains(user.id)
+            }
+        } catch {
+            print("Error checkIfUserIsSubscribed", error.localizedDescription)
+        }
+        return false
     }
 }

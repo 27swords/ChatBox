@@ -114,6 +114,24 @@ final class ChatService {
         return listener
     }
     
+    public func currentUserPhoto() async throws -> [String] {
+        guard let email = auth.currentUser?.email else { throw ChatServiceError.noCurrentUser }
+        
+        let query = database.collection("users")
+            .whereField("email", isEqualTo: email)
+        
+        do {
+            let snapshot = try await query.getDocuments()
+            let currentPhoto = snapshot.documents.compactMap { document -> String? in
+                guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
+                return userIconURL
+            }
+            return currentPhoto
+        } catch {
+            throw ChatServiceError.failedToRetrieveData
+        }
+    }
+    
     //MARK: - Private methods
     ///adds the message to the specified conversation and updates the last message of the conversation.
     private func sendMessageToExistingConversation(convoId: String, messageData: [String: Any]) async throws {

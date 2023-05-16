@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import PhotosUI
+import SDWebImage
 
 final class ProfileViewController: UIViewController {
     
@@ -116,15 +117,28 @@ extension ProfileViewController: PHPickerViewControllerDelegate {
 private extension ProfileViewController {
     
     private func updateUI(user: DTO) {
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.imageIconImageView.sd_setImage(with: URL(string: user.userIconURL ?? ""))
+        guard let url = URL(string: user.userIconURL) else { return }
+        
+        imageIconImageView.sd_setImage(with: url) { [weak self] (image, error, cacheType, url) in
+            guard let self = self else { return }
             
-            DispatchQueue.main.async {
-                self.nicknameLabel.text = user.username
-                self.emailLabel.text = user.email
+            if let error = error {
+                print("Failed to load image with error: \(error.localizedDescription)")
+            } else {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let resizedImage = image?.sd_resizedImage(with: CGSize(width: 100, height: 100), scaleMode: .aspectFill)
+                    SDImageCache.shared.store(resizedImage, forKey: url?.absoluteString)
+                    
+                    DispatchQueue.main.async {
+                        self.imageIconImageView.image = resizedImage
+                        self.nicknameLabel.text = user.username
+                        self.emailLabel.text = user.email
+                    }
+                }
             }
         }
     }
+
     
     private func profileGet() async {
         do {

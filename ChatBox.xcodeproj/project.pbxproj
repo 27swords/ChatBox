@@ -70,8 +70,6 @@
 		49CE63AA299135AB008D188A /* CheckFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63A9299135AB008D188A /* CheckFields.swift */; };
 		49CE63AE29914FA1008D188A /* DTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE63AD29914FA1008D188A /* DTO.swift */; };
 		49CE90BF29F9216100472787 /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90BE29F9216100472787 /* MBProgressHUD */; };
-		49CE90C229F9254E00472787 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90C129F9254E00472787 /* Realm */; };
-		49CE90C429F9254E00472787 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 49CE90C329F9254E00472787 /* RealmSwift */; };
 		49CE90CC29F9446400472787 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE90CA29F9446400472787 /* NewConversationViewController.swift */; };
 		49CE90CD29F9446400472787 /* NewConversationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49CE90CB29F9446400472787 /* NewConversationViewController.xib */; };
 		49CE90D129F94A0100472787 /* NewConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CE90CF29F94A0100472787 /* NewConversationTableViewCell.swift */; };
@@ -146,10 +144,8 @@
 				4949692E29E7363D00EDA89D /* FirebaseFirestoreSwift in Frameworks */,
 				4949691829E7363D00EDA89D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				4949693029E7363D00EDA89D /* FirebaseFunctions in Frameworks */,
-				49CE90C229F9254E00472787 /* Realm in Frameworks */,
 				497BEA0829E070DF00FC02EF /* SDWebImage in Frameworks */,
 				4949691229E7363D00EDA89D /* FirebaseAnalytics in Frameworks */,
-				49CE90C429F9254E00472787 /* RealmSwift in Frameworks */,
 				4949691E29E7363D00EDA89D /* FirebaseAuth in Frameworks */,
 				4949692829E7363D00EDA89D /* FirebaseDynamicLinks in Frameworks */,
 				4949692229E7363D00EDA89D /* FirebaseCrashlytics in Frameworks */,
@@ -639,8 +635,6 @@
 				4949694329E7363D00EDA89D /* FirebaseStorage */,
 				4949694529E7363D00EDA89D /* FirebaseStorageCombine-Community */,
 				49CE90BE29F9216100472787 /* MBProgressHUD */,
-				49CE90C129F9254E00472787 /* Realm */,
-				49CE90C329F9254E00472787 /* RealmSwift */,
 			);
 			productName = ChatBox;
 			productReference = 4914A7F1298527C40076F03C /* ChatBox.app */;
@@ -675,7 +669,6 @@
 				497BEA0629E070DE00FC02EF /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				4949691029E7363D00EDA89D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				49CE90BD29F9216100472787 /* XCRemoteSwiftPackageReference "MBProgressHUD" */,
-				49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 4914A7F2298527C40076F03C /* Products */;
 			projectDirPath = "";
@@ -995,14 +988,6 @@
 				version = 1.2.0;
 			};
 		};
-		49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1155,16 +1140,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 49CE90BD29F9216100472787 /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
 			productName = MBProgressHUD;
-		};
-		49CE90C129F9254E00472787 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		49CE90C329F9254E00472787 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 49CE90C029F9254E00472787 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -68,7 +68,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
         let convoCell = chats[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: convoCell.userIconURL ?? "")
+            cell.configureImageCell(items: convoCell.userIconURL ?? "")
             
             DispatchQueue.main.async {
                 cell.configureChatListCell(items: convoCell)
@@ -84,6 +84,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     
         vc.otherID = selectedFriend.otherId
         vc.title = selectedFriend.username
+        vc.otherUserIconImage = selectedFriend.userIconURL
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
