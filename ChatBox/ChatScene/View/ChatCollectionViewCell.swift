@@ -27,6 +27,5 @@ class ChatCollectionViewCell: MessageContentCell {
         fatalError("Unsupported message kind: \(message.kind)")
         }
     }
-    
 }
 

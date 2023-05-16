@@ -84,6 +84,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
     
         vc.otherID = selectedFriend.otherId
         vc.title = selectedFriend.username
+        vc.otherUserIconImage = selectedFriend.userIconURL
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)

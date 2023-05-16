@@ -117,7 +117,7 @@ private extension ProfileViewController {
     
     private func updateUI(user: DTO) {
         DispatchQueue.global(qos: .userInteractive).async {
-            self.imageIconImageView.sd_setImage(with: URL(string: user.userIconURL ?? ""))
+            self.imageIconImageView.sd_setImage(with: URL(string: user.userIconURL))
             
             DispatchQueue.main.async {
                 self.nicknameLabel.text = user.username

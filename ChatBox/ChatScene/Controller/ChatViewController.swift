@@ -9,6 +9,7 @@ import UIKit
 import MessageKit
 import InputBarAccessoryView
 import Firebase
+import SDWebImage
 
 final class ChatViewController: MessagesViewController {
     
@@ -19,6 +20,8 @@ final class ChatViewController: MessagesViewController {
     lazy var chatService = ChatService()
     let selfSender = Sender(senderId: "1", displayName: "", photoURL: "")
     private var listener: ListenerRegistration?
+    var otherUserIconImage: String?
+    var currentUserIconImage: String?
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -28,6 +31,7 @@ final class ChatViewController: MessagesViewController {
         
         Task { @MainActor in
             await searchChat()
+            await getUserPhoto()
         }
     }
     
@@ -52,9 +56,22 @@ extension ChatViewController: MessagesDisplayDelegate, MessagesLayoutDelegate, M
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessageKit.MessagesCollectionView) -> MessageKit.MessageType {
         return messages[indexPath.section]
     }
-    
+   
+
     func numberOfSections(in messagesCollectionView: MessageKit.MessagesCollectionView) -> Int {
         return messages.count
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let previousMessage = indexPath.section > 0 ? messages[indexPath.section - 1] : nil
+        
+        if message.sender.senderId == selfSender.senderId {
+            avatarView.isHidden = previousMessage?.sender.senderId == selfSender.senderId
+            avatarView.sd_setImage(with: URL(string: currentUserIconImage ?? ""))
+        } else {
+            avatarView.isHidden = previousMessage?.sender.senderId == message.sender.senderId
+            avatarView.sd_setImage(with: URL(string: otherUserIconImage ?? ""))
+        }
     }
 }
 
@@ -126,6 +143,20 @@ private extension ChatViewController {
             }
         } catch {
             print("Error fetching messages: \(error.localizedDescription)")
+        }
+    }
+    
+    private func getUserPhoto() async {
+        do {
+            let currentImage = try await chatService.currentUserPhoto()
+            self.currentUserIconImage = currentImage.first
+            print("Photo", currentImage)
+            
+            DispatchQueue.main.async {
+                self.messagesCollectionView.reloadDataAndKeepOffset()
+            }
+        } catch {
+            print("error - \(error.localizedDescription)")
         }
     }
 }

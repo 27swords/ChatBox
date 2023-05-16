@@ -71,8 +71,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         let friendCell = friend[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: friendCell.userIconURL ?? "")
-
+            cell.cunfigureImageCell(users: friendCell.userIconURL)
                 DispatchQueue.main.async {
                     cell.cunfigureTextCell(users: friendCell.username)
                 }
@@ -95,6 +94,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
         vc.otherID = selectedFriend.id
         vc.title = selectedFriend.username
+        vc.otherUserIconImage = selectedFriend.userIconURL
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)

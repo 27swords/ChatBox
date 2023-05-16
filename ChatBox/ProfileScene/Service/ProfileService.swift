@@ -35,7 +35,12 @@ final class ProfileService {
             let user = snapshot.documents.compactMap { document -> DTO? in
                 guard let username = document.data()["username"] as? String else { return nil }
                 guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
-                return DTO(id: document.documentID, email: email, password: "", username: username, userIconURL: userIconURL)
+                let data = DTO()
+                data.id = document.documentID
+                data.email = email
+                data.username = username
+                data.userIconURL = userIconURL
+                return data
             }
             return user
         } catch {
