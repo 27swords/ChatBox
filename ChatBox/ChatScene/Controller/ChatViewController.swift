@@ -150,7 +150,6 @@ private extension ChatViewController {
         do {
             let currentImage = try await chatService.currentUserPhoto()
             self.currentUserIconImage = currentImage.first
-            print("Photo", currentImage)
             
             DispatchQueue.main.async {
                 self.messagesCollectionView.reloadDataAndKeepOffset()

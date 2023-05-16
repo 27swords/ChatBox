@@ -40,12 +40,25 @@ final class SearchUsersTableViewCell: UITableViewCell {
         updateSubscribeButtonStatus()
     }
     
-    func configureImagecell(items: String) {
-        userIconImageView.sd_setImage(with: URL(string: items))
+    func configureImageCell(items: String) {
+        guard let url = URL(string: items) else { return }
+        userIconImageView.sd_setImage(with: url) { [weak self] (image, error, cacheType, url) in
+            guard let self = self else { return }
+            if let error = error {
+                print("Failed to load image with error: \(error.localizedDescription)")
+            } else {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let resizedImage = image?.sd_resizedImage(with: CGSize(width: 50, height: 50), scaleMode: .aspectFill)
+                    DispatchQueue.main.async {
+                        self.userIconImageView.image = resizedImage
+                    }
+                }
+            }
+        }
     }
     
     func updateSubscribeButtonStatus() {
-        let color: UIColor = isSubscribed ? .systemGray : .blue
+        let color: UIColor = isSubscribed ? .systemGray : .systemBlue
         let title: String = isSubscribed ? "Вы подписаны" : "Подписаться"
         subscribeButton.tintColor = color
         subscribeButton.setTitle(title, for: .normal)

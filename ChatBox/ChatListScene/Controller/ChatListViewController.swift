@@ -68,7 +68,7 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
         let convoCell = chats[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: convoCell.userIconURL ?? "")
+            cell.configureImageCell(items: convoCell.userIconURL ?? "")
             
             DispatchQueue.main.async {
                 cell.configureChatListCell(items: convoCell)

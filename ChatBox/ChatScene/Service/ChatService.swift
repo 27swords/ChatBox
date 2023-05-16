@@ -132,25 +132,6 @@ final class ChatService {
         }
     }
     
-//    public func profileGet() async throws -> [DTO] {
-//        guard let email = auth.currentUser?.email else { throw ProfileServiceError.userNotLoggedIn }
-//
-//        let query = database.collection("users")
-//            .whereField("email", isEqualTo: email)
-//
-//        do {
-//            let snapshot = try await query.getDocuments()
-//            let user = snapshot.documents.compactMap { document -> DTO? in
-//                guard let username = document.data()["username"] as? String else { return nil }
-//                guard let userIconURL = document.data()["userIconURL"] as? String else { return nil }
-//                return DTO(id: document.documentID, email: email, password: "", username: username, userIconURL: userIconURL)
-//            }
-//            return user
-//        } catch {
-//            throw ProfileServiceError.failedToRetrieveData
-//        }
-//    }
-    
     //MARK: - Private methods
     ///adds the message to the specified conversation and updates the last message of the conversation.
     private func sendMessageToExistingConversation(convoId: String, messageData: [String: Any]) async throws {

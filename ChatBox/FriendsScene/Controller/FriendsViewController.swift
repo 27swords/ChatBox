@@ -71,7 +71,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         let friendCell = friend[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.cunfigureImageCell(users: friendCell.userIconURL)
+            cell.configureImageCell(items: friendCell.userIconURL)
                 DispatchQueue.main.async {
                     cell.cunfigureTextCell(users: friendCell.username)
                 }

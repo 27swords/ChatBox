@@ -51,7 +51,7 @@ extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
         let usersCell = users[indexPath.row]
         
         DispatchQueue.global(qos: .userInitiated).async {
-            cell.configureImagecell(items: usersCell.userIconURL)
+            cell.configureImageCell(items: usersCell.userIconURL)
             
             DispatchQueue.main.async {
                 cell.configureTextCell(items: usersCell)
