@@ -4,7 +4,7 @@ Welcome to the ChatBox Messenger project! This is a Swift-based messaging app th
 
 <h2>Screenshots</h2>
 
-<img src="ReadMeImages/image2.png" alt="Example Image" width="294" height="639"> 
+<img src="ReadMeImages/image2.png" alt="Example Image" width="147" height="319"> <img src="ReadMeImages/image1.png" alt="Example Image" width="147" height="319"> <img src="ReadMeImages/image3.png" alt="Example Image" width="147" height="319"> <img src="ReadMeImages/image4.png" alt="Example Image" width="147" height="319">  
 
 <h2>List of used libraries and frameworks</h2>
 
