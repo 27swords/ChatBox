@@ -7,7 +7,6 @@
 
 import UIKit
 import Firebase
-import PhotosUI
 import SDWebImage
 
 final class ProfileViewController: UIViewController {
@@ -17,7 +16,7 @@ final class ProfileViewController: UIViewController {
     @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var editPhotoButton: UIButton!
-        
+    
     //MARK: - Inits
     lazy var service = ProfileService()
     lazy var profile = [DTO]()
@@ -27,7 +26,7 @@ final class ProfileViewController: UIViewController {
     @IBAction func logOutAction(_ sender: Any) {
         logOutAcount()
     }
-
+    
     @IBAction func editPhotoAction(_ sender: Any) {
         presentPhotoActionSheet()
     }
@@ -47,77 +46,112 @@ final class ProfileViewController: UIViewController {
     }
 }
 
-//MARK: - Extension UIImagePicker
-extension ProfileViewController: PHPickerViewControllerDelegate {
+//MARK: - Extension UIImagePickerController
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func presentPhotoActionSheet() {
         let actionSheet = UIAlertController(title: nil,
                                             message: nil,
                                             preferredStyle: .actionSheet)
-
+        
         actionSheet.addAction(UIAlertAction(title: "Закрыть",
                                             style: .cancel,
                                             handler: nil))
-
+        
         actionSheet.addAction(UIAlertAction(title: "Сделать фото",
                                             style: .default,
                                             handler: { [weak self] _ in
             self?.presentCamera()
         }))
-
+        
         actionSheet.addAction(UIAlertAction(title: "Выбрать из галереи",
                                             style: .default,
                                             handler: { [weak self] _ in
             self?.presentPhotoPicker()
         }))
-
-        present(actionSheet, animated: true)
-    }
-
-    func presentCamera() {
         
-    }
-
-    func presentPhotoPicker() {
-        var configuration = PHPickerConfiguration(photoLibrary: .shared())
-        configuration.selectionLimit = 1
-        configuration.filter = .images
-        let vc = PHPickerViewController(configuration: configuration)
-        vc.delegate = self
-        present(vc, animated: true)
+        
+        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                actionSheet.popoverPresentationController?.sourceView = rootVC.view
+                actionSheet.popoverPresentationController?.sourceRect = CGRect(x: rootVC.view.bounds.midX, y: rootVC.view.bounds.midY, width: 0, height: 0)
+                actionSheet.popoverPresentationController?.permittedArrowDirections =  []
+                
+            }
+            rootVC.present(actionSheet, animated: true, completion: nil)
+        }
+        
     }
     
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    func presentCamera() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .camera
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true)
+    }
+    
+    func presentPhotoPicker() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        imagePickerController.allowsEditing = true
+        present(imagePickerController, animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        results.forEach { result in
-            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
-                guard let image = reading as? UIImage, error == nil else {
-                    return
-                }
-                
-                Task { @MainActor in
+        guard let image = info[.editedImage] as? UIImage else {
+            print("Error: Selected image could not be converted to UIImage.")
+            return
+        }
+        
+        self.service.uploadUserIcon(image: image) { [weak self] result in
+            switch result {
+            case .success(let url):
+                Task {
                     do {
-                        let url = try await self.service.uploadUserIcon(image: image)
-                        try await self.service.updateUserProfile(userIconURL: url)
+                        try await self?.service.updateUserProfile(userIconURL: url)
                         DispatchQueue.main.async {
-                            self.imageIconImageView.image = image
+                            self?.imageIconImageView.image = image
                         }
-                        
                     } catch {
                         print("error \(error)")
                     }
                 }
+            case .failure(let error):
+                print("error \(error)")
             }
         }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 
 //MARK: - Private Extension
 private extension ProfileViewController {
     
+    private func editPhoto() {
+        let imagePickerController = UIImagePickerController()
+        
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
     private func updateUI(user: DTO) {
-        guard let url = URL(string: user.userIconURL) else { return }
+        self.nicknameLabel.text = user.username
+        self.emailLabel.text = user.email
+        
+        guard let url = URL(string: user.userIconURL) else {
+            self.imageIconImageView.image = UIImage(systemName: "person")
+            return
+        }
         
         imageIconImageView.sd_setImage(with: url) { [weak self] (image, error, cacheType, url) in
             guard let self = self else { return }
@@ -131,14 +165,11 @@ private extension ProfileViewController {
                     
                     DispatchQueue.main.async {
                         self.imageIconImageView.image = resizedImage
-                        self.nicknameLabel.text = user.username
-                        self.emailLabel.text = user.email
                     }
                 }
             }
         }
     }
-
     
     private func profileGet() async {
         do {
@@ -150,14 +181,14 @@ private extension ProfileViewController {
             print("Error profileGet", error.localizedDescription)
         }
     }
-
+    
     private func logOutAcount() {
         do {
             try Auth.auth().signOut()
             
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let startVC = storyboard.instantiateViewController(withIdentifier: "StartViewController")
-
+            
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                   let window = windowScene.windows.first else {
                 return

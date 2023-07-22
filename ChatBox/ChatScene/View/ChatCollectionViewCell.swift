@@ -22,7 +22,7 @@ class ChatCollectionViewCell: MessageContentCell {
         case .text(let text):
             MessageLabel().text = text
             MessageLabel().textColor = displayDelegate.textColor(for: message, at: indexPath, in: messagesCollectionView)
-            messageContainerView.backgroundColor = .green // set the background color to green
+            messageContainerView.backgroundColor = .green 
         default:
         fatalError("Unsupported message kind: \(message.kind)")
         }

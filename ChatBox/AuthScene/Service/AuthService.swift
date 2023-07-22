@@ -27,6 +27,7 @@ final class AuthService {
         do {
             let result = try await auth.signIn(withEmail: data.email, password: data.password)
             let user = result.user
+            
             if user.isEmailVerified {
                 return .success
             } else {

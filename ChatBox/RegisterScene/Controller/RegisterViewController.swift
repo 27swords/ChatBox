@@ -144,9 +144,9 @@ private extension RegisterViewController {
         passTextField.text = nil
         repPassTextField.text = nil
         
-        errorNicknameLabel.text = ""
-        errorEmail.text = ""
-        errorPassword.text = ""
+        errorNicknameLabel.text = nil
+        errorEmail.text = nil
+        errorPassword.text = nil
     }
     
     
