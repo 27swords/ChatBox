@@ -2,6 +2,10 @@
 
 Welcome to the ChatBox Messenger project! This is a Swift-based messaging app that allows users to chat with each other in real-time. 
 
+<h2>Screenshots</h2>
+
+<img src="ReadMeImages/image2.png" alt="Example Image" width="294" height="639"> 
+
 <h2>List of used libraries and frameworks</h2>
 
 * UIKit
@@ -23,4 +27,3 @@ Welcome to the ChatBox Messenger project! This is a Swift-based messaging app th
 * Friend search
 
 * adding a user photo
-
