@@ -50,25 +50,24 @@ extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
         }
         let usersCell = users[indexPath.row]
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            cell.configureImageCell(items: usersCell.userIconURL)
-            
-            DispatchQueue.main.async {
-                cell.configureTextCell(items: usersCell)
-                cell.users = usersCell
-            }
-            
-            Task { @MainActor in
-                do {
-                    let isSubscribed = try await self.service.checkIfUserIsSubscribed(user: usersCell)
-                    cell.isSubscribed = isSubscribed
-                    cell.updateSubscribeButtonStatus()
-                } catch {
-                    
-                }
+        cell.configureImageCell(items: usersCell.userIconURL)
+        cell.configureTextCell(items: usersCell)
+        cell.users = usersCell
+        
+        Task { @MainActor in
+            do {
+                let isSubscribed = try await self.service.checkIfUserIsSubscribed(user: usersCell)
+                cell.isSubscribed = isSubscribed
+                cell.updateSubscribeButtonStatus()
+            } catch {
+                print("Error isSubscribed: \(error.localizedDescription)")
             }
         }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
     }
 }
 
@@ -82,6 +81,7 @@ private extension SearchUserViewController {
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.register(UINib(nibName: String(describing: SearchUsersTableViewCell.self), bundle: nil),
                                    forCellReuseIdentifier: String(describing: SearchUsersTableViewCell.self))
     }

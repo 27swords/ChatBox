@@ -48,14 +48,16 @@ final class ProfileService {
         }
     }
     
-    /// Save an image to Firebase Storage and return its download URL
-    public func uploadUserIcon(image: UIImage) async throws -> URL {
+    /// Save an image to Firebase Storage and return its download URL    
+    public func uploadUserIcon(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
         guard let currentUserId = auth.currentUser?.uid else {
-            throw ProfileServiceError.userNotLoggedIn
+            completion(.failure(ProfileServiceError.userNotLoggedIn))
+            return
         }
         
         guard let imageData = image.jpegData(compressionQuality: 0.4) else {
-            throw ProfileServiceError.userNotLoggedIn
+            completion(.failure(ProfileServiceError.userNotLoggedIn))
+            return
         }
         
         let storageRef = Storage.storage().reference()
@@ -64,15 +66,24 @@ final class ProfileService {
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         
-        do {
-            let avatarImageRef = userAvatarRef.child("userIcon.jpg")
-            avatarImageRef.putData(imageData, metadata: metadata)
-
-            return try await avatarImageRef.downloadURL()
-        } catch {
-            throw error
+        let avatarImageRef = userAvatarRef.child("userIcon.jpg")
+        _ = avatarImageRef.putData(imageData, metadata: metadata) { metadata, error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                avatarImageRef.downloadURL { url, error in
+                    if let url = url {
+                        completion(.success(url))
+                    } else if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.failure(ProfileServiceError.failedToRetrieveData))
+                    }
+                }
+            }
         }
     }
+
 
     /// Update the user's profile with the given avatar URL
     public func updateUserProfile(userIconURL: URL) async throws {
@@ -83,9 +94,8 @@ final class ProfileService {
         let userRef = Firestore.firestore().collection("users").document(currentUserId)
         
         do {
-            let batch = Firestore.firestore().batch()
-            batch.updateData(["userIconURL": userIconURL.absoluteString], forDocument: userRef)
-            try await batch.commit()
+            try await userRef.updateData(["userIconURL": userIconURL.absoluteString])
+            print("updateUserProfile: - \(userRef)")
         } catch {
             throw error
         }

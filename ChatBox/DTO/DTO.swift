@@ -16,10 +16,4 @@ final class DTO {
     var username: String = ""
     var userIconURL: String = ""
 }
-//struct DTO {
-//    var id: String
-//    var email: String
-//    var password: String
-//    var username: String
-//    var userIconURL: String?
-//}
+
